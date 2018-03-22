@@ -35,9 +35,10 @@ boardLogic.addGeneratedCards = function (number, color) {
 }
 
 boardLogic.createCard = function (number, color){
-    var card = {};
-    card.number = number;
-    card.color = color;
+    var card = {
+        number: number,
+        color: color
+    };
     return card;
 }
 
