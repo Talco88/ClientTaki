@@ -66,6 +66,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CSS\Board.css" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -75,8 +76,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HTML\Board.html" />
-    <Content Include="HTML\Lobby.html" />
     <Content Include="Index.html" />
     <Content Include="JS\BoardLogic.js" />
     <Content Include="JS\Platform.js" />
@@ -89,7 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CSS\" />
+    <Folder Include="HTML\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

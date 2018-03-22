@@ -3,24 +3,35 @@
 <head>
     <title>Taki</title>
 	<meta charset="utf-8" />
+
     <script src="JS/Utility.js"></script>
     <script src="JS/Platform.js"></script>
     <script src="JS/Lobby.js"></script>
     <script src="JS/BoardLogic.js"></script>
 
-    <style>
-        li:hover{ color:aqua;}
-    </style>
+    <link rel="stylesheet" href="CSS/Board.css">
+
 </head>
 <body>
     <header id="headerDiv"></header>
 
     <div id="mainWindow"></div>
 
+    <div id="lobby" style="display:none">
+        <button type="button" id="startGameBtn">Start Game</button>
+    </div>
+
+    <div id="board" style="display:none">
+        <span>is the board!!</span>
+        <div id="cards"></div>
+    </div>
+
     <footer id="footerDiv"></footer>
 
+    <!--function call after the dom was fully loaded-->
     <script>
         lobby.load();
     </script>
+
 </body>
 </html>

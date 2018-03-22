@@ -51,20 +51,22 @@ boardLogic.shuffleDeck = function (iDeck) {
     }
 }
 
+
+// UI manipulation section
 boardLogic.loadUI = function () {
-    var file = "../HTML/Board.html";
+    lobby.removeFromView();
+    boardLogic.divInDOM = document.getElementById("board");
+    boardLogic.divInDOM.style.display = utility.displayActive;
+
     boardLogic.init();
-    if (boardLogic.html) {
-        boardLogic.setToView(boardLogic.html);
-    }
-    else {
-        utility.getHTMLData(file, boardLogic.setToView);
-    }
+
+    ////////
+    // TODO: remove this code
+    // test display all the cards on the page
+    ////////
+    boardLogic.testUI();
 }
 
-boardLogic.setToView = function (content) {
-    boardLogic.html = content;
-    utility.setToMainView(content);
-
-    boardLogic.testUI();
+boardLogic.removeFromView = function () {
+    boardLogic.divInDOM.style.display = utility.displayHidden;
 }
