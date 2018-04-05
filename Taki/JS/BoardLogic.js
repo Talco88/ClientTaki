@@ -1,4 +1,7 @@
 ﻿var boardLogic = {};
+boardLogic.firstHandDivision = 8;
+boardLogic.IsInit = false;
+boardLogic.punishNumber = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
 boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" })
 
@@ -15,6 +18,7 @@ boardLogic.init = function () {
     }
 
     boardLogic.shuffleDeck(boardLogic.deckOfCards);
+    boardLogic.IsInit = true;
 }
 
 boardLogic.addGeneratedCards = function (number, color) {
@@ -45,7 +49,11 @@ boardLogic.shuffleDeck = function (iDeck) {
     }
 }
 
-boardLogic.GetCardFromDeck = function () {
+boardLogic.getCardFromDeck = function () {
+    if (!boardLogic.IsInit) {
+        boardLogic.init();
+    }
+
     if (boardLogic.deckOfCards.length == 0) {
         boardLogic.deckOfCards = boardLogic.trashDeck;
         boardLogic.shuffleDeck(boardLogic.deckOfCards);
@@ -54,7 +62,32 @@ boardLogic.GetCardFromDeck = function () {
     return boardLogic.deckOfCards.shift();
 }
 
+boardLogic.getSomeCardsFromDeck = function (iNumberOfCards) {
+    var cardsArray = [];
+    for (var i = 0; i < iNumberOfCards; i++) {
+        cardsArray.push(boardLogic.getCardFromDeck());
+    }
+    return cardsArray;
+}
+
+boardLogic.getFirsdHandOfCards = function () {
+    return boardLogic.getSomeCardsFromDeck(boardLogic.firstHandDivision);
+}
+
+boardLogic.drowCardsFromDeck = function () {
+    var retCards = [];
+    var numberOfCardsToDrow = 1;
+    if (boardLogic.punishNumber > 0) {
+        numberOfCardsToDrow = boardLogic.punishNumber;
+    }
+
+    return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
+}
+
 boardLogic.trowCardToTrash = function (iCard) {
+    if (!boardLogic.IsInit) {
+        alert("Unable to get card from uninitialized board!!!");
+    }
     boardLogic.trashDeck.push(iCard);
 }
 
@@ -70,7 +103,14 @@ boardLogic.getCardFromPlayer = function (iCard) {
 
 boardLogic.cardRooles = function (iCard){
     // turn logic here, also mark the flags like +2 or the stop or + etc...
-    return (iCard.color === boardLogic.currentCard.color || iCard.number === boardLogic.currentCard.number);
+    if (iCard.color === boardLogic.currentCard.color || iCard.number === boardLogic.currentCard.number) {
+        if (iCard.number == 2) {
+            boardLogic.punishNumber += 2;
+        }
+        return true;
+    }
+
+    return false;
 }
 
 // UI manipulation section
@@ -111,7 +151,7 @@ function testDrowingCard() {
     if (boardLogic.currentCard != undefined) {
         boardLogic.trowCardToTrash(boardLogic.currentCard);
     }
-    boardLogic.currentCard = boardLogic.GetCardFromDeck();
+    boardLogic.currentCard = boardLogic.getCardFromDeck();
     currentCard.innerHTML = "Nmber: " + boardLogic.cardOptions[boardLogic.currentCard.number] + " Color: " + boardLogic.cardColors[boardLogic.currentCard.color];
     boardLogic.testUI();
 }

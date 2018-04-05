@@ -11,14 +11,6 @@ lobby.load = function () {
     else {
         alert("Error Parsing lobby html!");
     }
-
-    //var file = "../HTML/Lobby.html";
-    //if (lobby.html) {
-    //    utility.setToMainView(lobby.html);
-    //}
-    //else {
-    //    utility.getHTMLData(file, lobby.setToView);
-    //}
 }
 
 
