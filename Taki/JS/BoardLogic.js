@@ -2,6 +2,7 @@
 boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
+boardLogic.debug = true;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
 boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" })
 
@@ -9,6 +10,7 @@ boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5"
 boardLogic.init = function () {
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
+    boardLogic.skipTurn = false;
     for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
         if (i != 2) {
             for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
@@ -81,6 +83,9 @@ boardLogic.drowCardsFromDeck = function () {
         numberOfCardsToDrow = boardLogic.punishNumber;
     }
 
+    if (boardLogic.debug) {
+        console.log(boardLogic.deckOfCards);
+    }
     return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
 }
 
@@ -107,6 +112,9 @@ boardLogic.cardRooles = function (iCard){
         if (iCard.number == 2) {
             boardLogic.punishNumber += 2;
         }
+        else if (iCard.number == 11) {
+            boardLogic.skipTurn = true;
+        }
         return true;
     }
 
@@ -125,19 +133,10 @@ boardLogic.loadUI = function () {
     // TODO: remove this code
     // test display all the cards on the page
     ////////
-    boardLogic.testUI();
+
     var startBtn = document.getElementById("drowCard");
     if (startBtn) {
         startBtn.onclick = testDrowingCard;
-    }
-}
-
-
-boardLogic.testUI = function () {
-    var testDiv = document.getElementById("cards");
-    testDiv.innerHTML = "";
-    for (var i = 0; i < boardLogic.deckOfCards.length; i++) {
-        testDiv.innerHTML += "</br><li>" + boardLogic.cardOptions[boardLogic.deckOfCards[i].number] + " " + boardLogic.cardColors[boardLogic.deckOfCards[i].color] + "</li>";
     }
 }
 
@@ -153,5 +152,4 @@ function testDrowingCard() {
     }
     boardLogic.currentCard = boardLogic.getCardFromDeck();
     currentCard.innerHTML = "Nmber: " + boardLogic.cardOptions[boardLogic.currentCard.number] + " Color: " + boardLogic.cardColors[boardLogic.currentCard.color];
-    boardLogic.testUI();
 }
