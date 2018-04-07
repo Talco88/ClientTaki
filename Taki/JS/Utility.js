@@ -4,7 +4,19 @@ utility.displayHidden = 'none';
 utility.displayActive = 'block';
 
 
+utility.getCardHtml = function (iCard) {
+    var retVal = "";
+    var divOpenTemplate = "<div id='playersHandCard' class='";
+    var closeopenTemplate = "'>"
+    var divCloseTemlate = "</div>";
 
+    var option = boardLogic.cardOptions[iCard.number];
+    var color = boardLogic.cardColors[iCard.color];
+    retVal = divOpenTemplate + option + " " + color + closeopenTemplate + "type: " + option + " Color: " + color + divCloseTemlate;
+    retVal += "<br>"
+
+    return retVal;
+}
 
 
 

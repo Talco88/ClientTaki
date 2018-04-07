@@ -21,6 +21,11 @@ boardLogic.init = function () {
 
     boardLogic.shuffleDeck(boardLogic.deckOfCards);
     boardLogic.IsInit = true;
+
+    // first cards opem
+    boardLogic.currentCard = boardLogic.getCardFromDeck();
+    boardLogic.trowCardToTrash(boardLogic.currentCard);
+    boardLogic.printCurrentCard();
 }
 
 boardLogic.addGeneratedCards = function (number, color) {
@@ -100,10 +105,16 @@ boardLogic.getCardFromPlayer = function (iCard) {
     if (boardLogic.cardRooles(iCard)) {
         boardLogic.trowCardToTrash(boardLogic.currentCard);
         boardLogic.currentCard = iCard;
+        boardLogic.printCurrentCard();
         return true;
     }
 
     return false;
+}
+
+boardLogic.printCurrentCard = function () {
+    var currentCard = document.getElementById("currentCard");
+    currentCard.innerHTML = utility.getCardHtml(boardLogic.currentCard);
 }
 
 boardLogic.cardRooles = function (iCard){
@@ -128,6 +139,7 @@ boardLogic.loadUI = function () {
     boardLogic.divInDOM.style.display = utility.displayActive;
 
     boardLogic.init();
+    playerLogic.init();
 
     ////////
     // TODO: remove this code
@@ -151,5 +163,5 @@ function testDrowingCard() {
         boardLogic.trowCardToTrash(boardLogic.currentCard);
     }
     boardLogic.currentCard = boardLogic.getCardFromDeck();
-    currentCard.innerHTML = "Nmber: " + boardLogic.cardOptions[boardLogic.currentCard.number] + " Color: " + boardLogic.cardColors[boardLogic.currentCard.color];
+    boardLogic.printCurrentCard();
 }
