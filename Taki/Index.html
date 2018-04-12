@@ -9,6 +9,7 @@
     <script src="JS/Lobby.js"></script>
     <script src="JS/BoardLogic.js"></script>
     <script src="JS/PlayerLogic.js"></script>
+    <script src="JS/AiPlayer.js"></script>
 
     <link rel="stylesheet" href="CSS/Board.css">
     <link rel="stylesheet" href="CSS/GeneralStyle.css" />
@@ -17,19 +18,22 @@
 <body>
     <header id="headerDiv"></header>
 
-    <div id="mainWindow"></div>
-
+    <!--<div id="mainWindow"></div>-->
+    <main>    
     <div id="lobby" style="display:none">
         <button type="button" id="startGameBtn">Start Game</button>
     </div>
 
-    <div id="board" style="display:none">
-        <span>is the board!!</span>
-        <div><button type="button" id="drowCard">Get Card</button> </div>
-        <div id="currentCard"></div>
-        <br />
-        <div id="playersCards"></div>
+    <div class="board">
+        <!--<div><button type="button" id="drowCard">Get Card</button> </div>-->
+        <div class="section bot-cards"></div>
+        <div class="section central-board">
+            <div class="card"></div>
+            <div id="currentCard" class="card"></div>
+        </div>
+        <div id="playersCards" class="section player-cards"></div>
     </div>
+        </main>
 
 
     <footer id="footerDiv"></footer>
@@ -37,6 +41,7 @@
     <!--function call after the dom was fully loaded-->
     <script>
         lobby.load();
+        utility.addEvent(window, 'resize', utility.onReSize);
     </script>
 
 </body>

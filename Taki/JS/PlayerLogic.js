@@ -38,10 +38,25 @@ playerLogic.printCadsToUser = function () {
     var playersCards = document.getElementById("playersCards");
     for (var i = 0; i < playerLogic.Hand.length; i++) {
         var card = playerLogic.Hand[i];
-        playersCards.innerHTML += utility.getCardHtml(card, "playerLogic.onclickedCard");
+        playersCards.appendChild(utility.getCardHtml(card, playerLogic.onclickedCard));
     }
 }
 
 playerLogic.onclickedCard = function (iElement) {
-    alert("clicked!!");
+    var number = iElement.currentTarget.classList[0];
+    var color = iElement.currentTarget.classList[1];
+    var cardId = iElement.currentTarget.classList[2];
+    var selectedCard = null;
+    var index = 0;
+    var i = 0;
+    playerLogic.Hand.forEach(function (card) {
+        if (card.id == cardId) {
+            selectedCard = card;
+            index = i;
+        }
+        i++;
+    })
+
+
+    alert("card Selected, id: " + cardId + "  located at: " + index);
 }

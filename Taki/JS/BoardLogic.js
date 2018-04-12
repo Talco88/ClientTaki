@@ -24,7 +24,15 @@ boardLogic.init = function () {
     boardLogic.IsInit = true;
 
     // first cards opem
-    boardLogic.currentCard = boardLogic.getCardFromDeck();
+    boardLogic.openFirstCard();
+}
+
+boardLogic.openFirstCard = function () {
+    var opendCard = boardLogic.getCardFromDeck();
+    while (opendCard.number === 2  || opendCard.number > 9) {
+        opendCard = boardLogic.getCardFromDeck();
+    }
+    boardLogic.currentCard = opendCard;
     boardLogic.trowCardToTrash(boardLogic.currentCard);
     boardLogic.printCurrentCard();
 }
@@ -117,7 +125,7 @@ boardLogic.getCardFromPlayer = function (iCard) {
 
 boardLogic.printCurrentCard = function () {
     var currentCard = document.getElementById("currentCard");
-    currentCard.innerHTML = utility.getCardHtml(boardLogic.currentCard);
+    currentCard.appendChild(utility.getCardHtml(boardLogic.currentCard));
 }
 
 boardLogic.cardRooles = function (iCard){
@@ -138,7 +146,7 @@ boardLogic.cardRooles = function (iCard){
 // UI manipulation section
 boardLogic.loadUI = function () {
     lobby.removeFromView();
-    boardLogic.divInDOM = document.getElementById("board");
+    boardLogic.divInDOM = document.querySelector(".board");
     boardLogic.divInDOM.style.display = utility.displayActive;
 
     boardLogic.init();

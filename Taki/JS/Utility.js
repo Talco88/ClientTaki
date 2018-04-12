@@ -1,29 +1,48 @@
 ﻿var utility = {};
 
 utility.displayHidden = 'none';
-utility.displayActive = 'block';
+utility.displayActive = 'flex';
 
 
 utility.getCardHtml = function (iCard, iClickFunc) {
-    var retVal = "";
-    var divOpenTemplate = "<div id='playersHandCard' class='";
-    var closeopenTemplate = "'>"
-    var divCloseTemlate = "</div>";
+    var cardDiv = document.createElement('div');
+    cardDiv.id = 'playersHandCard';
 
-    var onclickEvent = "";
     if (iClickFunc && iClickFunc != null) {
-        onclickEvent = "' onclick='"+ iClickFunc +"(this)";
+        // a call is not always needed
+        cardDiv.onclick = iClickFunc;
     }
-
+    
     var option = boardLogic.cardOptions[iCard.number];
-    var innedDiv = "<div class='cardOption'>" + option + divCloseTemlate;
     var color = boardLogic.cardColors[iCard.color];
-    // create card tepmlate with add information
-    retVal = divOpenTemplate + option + " " + color + " card' number='" + iCard.number + "' color='" + color + onclickEvent + closeopenTemplate + innedDiv + divCloseTemlate;
-    //retVal += "<br>"
+    cardDiv.className = option + " " + color + " " + iCard.id + " card taki-card";
 
-    return retVal;
+
+    var innerDiv = document.createElement('div');
+    innerDiv.className = 'cardOption';
+    innerDiv.innerText = option;
+
+    cardDiv.appendChild(innerDiv);
+
+    return cardDiv;
 }
+
+utility.onReSize = function () {
+    console.log("resized!");
+    var margin = 5;
+
+}
+
+utility.addEvent = function (object, type, callback) {
+    if (object == null || typeof (object) == 'undefined') return;
+    if (object.addEventListener) {
+        object.addEventListener(type, callback, false);
+    } else if (object.attachEvent) {
+        object.attachEvent("on" + type, callback);
+    } else {
+        object["on" + type] = callback;
+    }
+};
 
 
 
@@ -48,9 +67,4 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 //        xhttp.send();
 //        return;
 //    }
-//}
-
-//utility.setToMainView = function (content) {
-//    var mainWindow = document.getElementById("mainWindow");
-//    mainWindow.innerHTML = content;
 //}
