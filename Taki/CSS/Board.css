@@ -7,14 +7,38 @@ li:hover{
 }
 
 
+#playersCards{
+      position:fixed;
+   bottom:10px;
+   width:100%;
+}
+
 #playersHandCard:hover{ 
     color:aqua;
 
 }
 
+.card{
+    background-color: white;
+    width: 170px;
+    height: 200px;
+    border-radius: 10px;
+    display: inline-block;
+    border-color: black;
+    border-width: 2px;
+    margin: 5px;
+}
+
+.cardOption{
+    text-align: center;
+    vertical-align: central;
+    margin-top: 20px;
+    font-size: 60px;
+    font: bold;
+}
+
 .Green{ 
     color:lightgreen;
-
 }
 
 .Red{ 

@@ -3,6 +3,7 @@ boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
 boardLogic.debug = true;
+boardLogic.runId = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
 boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" })
 
@@ -38,11 +39,13 @@ boardLogic.addGeneratedCards = function (number, color) {
     }
 }
 
-boardLogic.createCard = function (number, color){
+boardLogic.createCard = function (number, color) {
     var card = {
+        id: boardLogic.runId,
         number: number,
         color: color
     };
+    boardLogic.runId++;
     return card;
 }
 

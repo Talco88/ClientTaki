@@ -38,6 +38,10 @@ playerLogic.printCadsToUser = function () {
     var playersCards = document.getElementById("playersCards");
     for (var i = 0; i < playerLogic.Hand.length; i++) {
         var card = playerLogic.Hand[i];
-        playersCards.innerHTML += utility.getCardHtml(card);
+        playersCards.innerHTML += utility.getCardHtml(card, "playerLogic.onclickedCard");
     }
+}
+
+playerLogic.onclickedCard = function (iElement) {
+    alert("clicked!!");
 }

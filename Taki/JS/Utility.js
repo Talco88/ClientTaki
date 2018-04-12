@@ -4,16 +4,23 @@ utility.displayHidden = 'none';
 utility.displayActive = 'block';
 
 
-utility.getCardHtml = function (iCard) {
+utility.getCardHtml = function (iCard, iClickFunc) {
     var retVal = "";
     var divOpenTemplate = "<div id='playersHandCard' class='";
     var closeopenTemplate = "'>"
     var divCloseTemlate = "</div>";
 
+    var onclickEvent = "";
+    if (iClickFunc && iClickFunc != null) {
+        onclickEvent = "' onclick='"+ iClickFunc +"(this)";
+    }
+
     var option = boardLogic.cardOptions[iCard.number];
+    var innedDiv = "<div class='cardOption'>" + option + divCloseTemlate;
     var color = boardLogic.cardColors[iCard.color];
-    retVal = divOpenTemplate + option + " " + color + closeopenTemplate + "type: " + option + " Color: " + color + divCloseTemlate;
-    retVal += "<br>"
+    // create card tepmlate with add information
+    retVal = divOpenTemplate + option + " " + color + " card' number='" + iCard.number + "' color='" + color + onclickEvent + closeopenTemplate + innedDiv + divCloseTemlate;
+    //retVal += "<br>"
 
     return retVal;
 }

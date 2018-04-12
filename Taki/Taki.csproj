@@ -68,6 +68,7 @@
   <ItemGroup>
     <Content Include="CSS\Board.css" />
     <Content Include="CSS\GeneralStyle.css" />
+    <Content Include="JS\AiPlayer.js" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
