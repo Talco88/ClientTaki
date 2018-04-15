@@ -6,3 +6,26 @@ button{
     color: white;
     background-color: blueviolet;
 }
+
+/*
+    Flex:
+
+    align-items: flex-end;
+    flex-direction: row-reverse;
+    justify-content: center;
+    order: 1;
+    flex-wrap: wrap;
+
+    align-self: flex-end;
+    align-content: flex-start;   /// space-between /// space-around //// stretch    /// ==>> determines the spacing between lines, while align-items determines how the items as a whole are aligned within the container.
+    
+    // combain flex-direction and flex-wrap
+    flex-flow: column wrap;
+
+
+    exaple: 
+    align-items: flex-end;
+    flex-flow: column-reverse wrap-reverse;
+    align-content: space-between;
+    justify-content: center;
+*/

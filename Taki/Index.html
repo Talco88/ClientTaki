@@ -18,22 +18,23 @@
 <body>
     <header id="headerDiv"></header>
 
-    <!--<div id="mainWindow"></div>-->
     <main>    
-    <div id="lobby" style="display:none">
-        <button type="button" id="startGameBtn">Start Game</button>
-    </div>
-
-    <div class="board">
-        <!--<div><button type="button" id="drowCard">Get Card</button> </div>-->
-        <div class="section bot-cards"></div>
-        <div class="section central-board">
-            <div class="card"></div>
-            <div id="currentCard" class="card"></div>
+        <div id="lobby" style="display:none">
+            <button type="button" id="startGameBtn">Start Game</button>
         </div>
-        <div id="playersCards" class="section player-cards"></div>
-    </div>
-        </main>
+
+        <div class="board">
+            <!--<div><button type="button" id="drowCard">Get Card</button> </div>-->
+            <div class="section bot-cards"></div>
+            <div class="section central-board">
+                <div class="card">
+                    <div class="cards-deck"></div>
+                </div>
+                <div id="currentCard" class="card"></div>
+            </div>
+            <div id="playersCards" class="section player-cards"></div>
+        </div>
+    </main>
 
 
     <footer id="footerDiv"></footer>

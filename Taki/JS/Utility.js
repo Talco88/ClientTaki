@@ -2,6 +2,7 @@
 
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
+utility.debug = true;
 
 
 utility.getCardHtml = function (iCard, iClickFunc) {
@@ -29,7 +30,6 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 
 utility.onReSize = function () {
     console.log("resized!");
-    var margin = 5;
 
 }
 

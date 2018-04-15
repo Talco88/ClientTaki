@@ -1,14 +1,14 @@
 ﻿var boardLogic = {};
+
 boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
-boardLogic.debug = true;
-boardLogic.runId = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
-boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" })
+boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" });
 
 
 boardLogic.init = function () {
+    boardLogic.runId = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.skipTurn = false;
@@ -31,6 +31,8 @@ boardLogic.openFirstCard = function () {
     var opendCard = boardLogic.getCardFromDeck();
     while (opendCard.number === 2  || opendCard.number > 9) {
         opendCard = boardLogic.getCardFromDeck();
+
+        // ADD card to trash
     }
     boardLogic.currentCard = opendCard;
     boardLogic.trowCardToTrash(boardLogic.currentCard);
@@ -99,7 +101,7 @@ boardLogic.drowCardsFromDeck = function () {
         numberOfCardsToDrow = boardLogic.punishNumber;
     }
 
-    if (boardLogic.debug) {
+    if (utility.debug) {
         console.log(boardLogic.deckOfCards);
     }
     return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);

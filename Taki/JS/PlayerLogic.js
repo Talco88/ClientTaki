@@ -7,7 +7,8 @@ playerLogic.init = function () {
 }
 
 // the function get a card and try to make a move, if the move is llegal the remove the card, else return string with error
-playerLogic.playSelectedCard = function (iCard) {
+playerLogic.playSelectedCard = function (iCardIndex, iCard) {
+
     if (boardLogic.getCardFromPlayer(iCard))
     {
         // move was verify.
@@ -47,7 +48,7 @@ playerLogic.onclickedCard = function (iElement) {
     var color = iElement.currentTarget.classList[1];
     var cardId = iElement.currentTarget.classList[2];
     var selectedCard = null;
-    var index = 0;
+    var index = -1;
     var i = 0;
     playerLogic.Hand.forEach(function (card) {
         if (card.id == cardId) {
@@ -57,6 +58,11 @@ playerLogic.onclickedCard = function (iElement) {
         i++;
     })
 
-
+    if (index >= 0) {
+        playerLogic.playSelectedCard(index, selectedCard);
+    }
+    else {
+        alert("unable to find the card");
+    }
     alert("card Selected, id: " + cardId + "  located at: " + index);
 }
