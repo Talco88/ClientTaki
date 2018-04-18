@@ -47,12 +47,14 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
-    height: 190px;
+    height: 180px;
+    width: 100%;
     margin: 0px;
 }
 
 #currentCard {
     display: inline-block;
+    margin: 5px;
 }
 
 #currentCard #playersHandCard{
