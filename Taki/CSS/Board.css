@@ -9,7 +9,9 @@
    bottom:10px;
    width:100%;
    height: 250px;
-   flex: 2;
+   flex: 3;
+   align-items: flex-end;
+   flex-direction: column;
 }
 
 .board{
@@ -35,28 +37,26 @@
     align-items: center;
 }
 
+.deck-wrapper{
+    align-items: center;
+    justify-content: space-around;
+}
+
 .cards-deck {
-    /*content: url();*/
     background-image: url('../Imgs/taki-card-back.JPG');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
-    width: 100%;
     height: 190px;
+    margin: 0px;
 }
 
 #currentCard {
-    /*position:fixed;*/
     display: inline-block;
 }
 
 #currentCard #playersHandCard{
     display: inline-block;
-}
-
-.player-cards #playersHandCard:hover{ 
-    bottom: 50px;
-    color: aqua;
 }
 
 .card{
@@ -65,7 +65,7 @@
     height: 200px;
     border-radius: 10px;
     display: inline-block;
-    margin: 5px;
+    position: relative;
 }
 
 .taki-card{
@@ -75,12 +75,18 @@
     border: 1px solid black;
 }
 
+
+.player-cards .taki-card:hover{ 
+    bottom: 60px;
+    background-color: lightblue;
+}
+
 .Green{ 
     color:green;
 }
 
 .Red{ 
-    color:red;
+    color: red;
 }
 
 .Yellow{

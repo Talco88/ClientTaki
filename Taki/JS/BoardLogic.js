@@ -127,6 +127,7 @@ boardLogic.getCardFromPlayer = function (iCard) {
 
 boardLogic.printCurrentCard = function () {
     var currentCard = document.getElementById("currentCard");
+    currentCard.innerHTML = "";
     currentCard.appendChild(utility.getCardHtml(boardLogic.currentCard));
 }
 

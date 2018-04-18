@@ -2,8 +2,8 @@
 
 playerLogic.init = function () {
     playerLogic.Hand = boardLogic.getFirsdHandOfCards();
-
     playerLogic.printCadsToUser();
+    playerLogic.initUIData();
 }
 
 // the function get a card and try to make a move, if the move is llegal the remove the card, else return string with error
@@ -23,6 +23,7 @@ playerLogic.playSelectedCard = function (iCardIndex, iCard) {
 
         if (index > -1) {
             playerLogic.Hand.splice(index, 1);
+            playerLogic.printCadsToUser();
         }
         return "";
     }
@@ -32,15 +33,22 @@ playerLogic.playSelectedCard = function (iCardIndex, iCard) {
 }
 
 playerLogic.drowCardsFromDeck = function () {
+    /// add validation that the player have no other option
     playerLogic.Hand = playerLogic.Hand.concat(boardLogic.drowCardsFromDeck());
+    playerLogic.printCadsToUser();
 }
 
+playerLogic.initUIData = function () {
+    document.getElementById("deckCards").onclick = playerLogic.drowCardsFromDeck;
+}
 playerLogic.printCadsToUser = function () {
     var playersCards = document.getElementById("playersCards");
+    playersCards.innerHTML = "";
     for (var i = 0; i < playerLogic.Hand.length; i++) {
         var card = playerLogic.Hand[i];
         playersCards.appendChild(utility.getCardHtml(card, playerLogic.onclickedCard));
     }
+    utility.manageCardsmargin();
 }
 
 playerLogic.onclickedCard = function (iElement) {
@@ -64,5 +72,8 @@ playerLogic.onclickedCard = function (iElement) {
     else {
         alert("unable to find the card");
     }
-    alert("card Selected, id: " + cardId + "  located at: " + index);
+
+    if (utility.debug) {
+        console.log("card Selected, id: " + cardId + "  located at: " + index);
+    }
 }

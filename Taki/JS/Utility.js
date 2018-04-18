@@ -29,8 +29,7 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 }
 
 utility.onReSize = function () {
-    console.log("resized!");
-
+    utility.manageCardsmargin();
 }
 
 utility.addEvent = function (object, type, callback) {
@@ -43,6 +42,21 @@ utility.addEvent = function (object, type, callback) {
         object["on" + type] = callback;
     }
 };
+
+utility.manageCardsmargin = function () {
+    var cards = document.querySelectorAll(".player-cards .taki-card");
+    if (cards && cards.length > 0) {
+        var calculatedMargin = ((((document.body.clientWidth - 50) / cards.length) - cards[0].clientWidth) / 1) - 4;
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].style.marginRight = calculatedMargin + "px";
+            //cards[i].style.marginLeft = calculatedMargin + "px";
+        }
+
+        if (utility.debug) {
+            console.log(document.body.clientWidth + " /  " + cards.length + "   -  " + cards[0].clientWidth + "   ==  " + calculatedMargin);
+        }
+    }
+}
 
 
 
