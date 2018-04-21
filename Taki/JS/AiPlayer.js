@@ -1,11 +1,13 @@
 ﻿var aiPlayer = {}
+aiPlayer.playerId = 1;
 
 aiPlayer.init = function () {
     aiPlayer.Hand = boardLogic.getFirsdHandOfCards();
+    aiPlayer.printAiCards();
 }
 
 aiPlayer.drowCardsFromDeck = function () {
-    aiPlayer.Hand = aiPlayer.Hand.concat(boardLogic.drowCardsFromDeck());
+    aiPlayer.Hand = aiPlayer.Hand.concat(boardLogic.drowCardsFromDeck(aiPlayer.playerId));
 }
 
 aiPlayer.makeMove = function () {
@@ -43,12 +45,40 @@ aiPlayer.makeMove = function () {
     });
 
     if (selectCard == null) {
-        // drow cards
+        var cards = boardLogic.drowCardsFromDeck(aiPlayer.playerId);
+        if (cards && cards.length > 0) {
+            aiPlayer.Hand = aiPlayer.Hand.concat(cards);
+        }
+        else {
+            if (utility.debug) {
+                console.log("AI try to pull card not in turn");
+            }
+        }
     }
-    else if (changeColor == null) {
+    else if (changeColor != null) {
         // play the change color
     }
     else {
-        // try make move on selected card.
+        if (boardLogic.getCardFromPlayer(selectCard, aiPlayer.playerId)) {
+            aiPlayer.Hand.splice(index, 1);
+        }
     }
+
+    if (utility.debug) {
+        console.log("AI play the following: ");
+        console.log(selectCard);
+    }
+
+
+    aiPlayer.printAiCards();
+}
+
+aiPlayer.printAiCards = function () {
+    var playersCards = document.getElementById("botCards");
+    playersCards.innerHTML = "";
+    for (var i = 0; i < playerLogic.Hand.length; i++) {
+        var card = playerLogic.Hand[i];
+        playersCards.appendChild(utility.flipedCard());
+    }
+    utility.manageCardsmargin(".bot-card-display");
 }

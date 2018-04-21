@@ -16,7 +16,7 @@ utility.getCardHtml = function (iCard, iClickFunc) {
     
     var option = boardLogic.cardOptions[iCard.number];
     var color = boardLogic.cardColors[iCard.color];
-    cardDiv.className = option + " " + color + " " + iCard.id + " card taki-card";
+    cardDiv.className = option + " " + color + " 0" + iCard.id + " card taki-card";
 
 
     var innerDiv = document.createElement('div');
@@ -28,8 +28,24 @@ utility.getCardHtml = function (iCard, iClickFunc) {
     return cardDiv;
 }
 
+utility.flipedCard = function () {
+    var cardDiv = document.createElement('div');
+    cardDiv.id = 'botHandCard';
+    cardDiv.className = "card deck-wrapper bot-card-display";
+    cardDiv.style.display = utility.displayActive;
+
+
+    var innerDiv = document.createElement('div');
+    innerDiv.className = "cards-deck";
+
+    cardDiv.appendChild(innerDiv);
+
+    return cardDiv;
+}
+
 utility.onReSize = function () {
-    utility.manageCardsmargin();
+    utility.manageCardsmargin(".player-cards .taki-card");
+    utility.manageCardsmargin(".bot-card-display");
 }
 
 utility.addEvent = function (object, type, callback) {
@@ -43,19 +59,22 @@ utility.addEvent = function (object, type, callback) {
     }
 };
 
-utility.manageCardsmargin = function () {
-    var cards = document.querySelectorAll(".player-cards .taki-card");
+utility.manageCardsmargin = function (iSelector) {
+    var cards = document.querySelectorAll(iSelector);
     if (cards && cards.length > 0) {
-        var calculatedMargin = ((((document.body.clientWidth - 50) / cards.length) - cards[0].clientWidth) / 1) - 4;
+        var calculatedMargin = utility.calculateMargininCards(cards.length, cards[0].clientWidth);
         for (var i = 0; i < cards.length; i++) {
             cards[i].style.marginRight = calculatedMargin + "px";
-            //cards[i].style.marginLeft = calculatedMargin + "px";
         }
 
-        if (utility.debug) {
-            console.log(document.body.clientWidth + " /  " + cards.length + "   -  " + cards[0].clientWidth + "   ==  " + calculatedMargin);
-        }
+        //if (utility.debug) {
+        //    console.log(document.body.clientWidth + " /  " + cards.length + "   -  " + cards[0].clientWidth + "   ==  " + calculatedMargin);
+        //}
     }
+}
+
+utility.calculateMargininCards = function (numberOfCards, cardWidth) {
+    return ((((document.body.clientWidth - 50) / numberOfCards) - cardWidth) / 1) - 4;
 }
 
 

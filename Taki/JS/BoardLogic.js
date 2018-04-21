@@ -4,14 +4,19 @@ boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
-boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "ChangeColor", 13: "+" });
+boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "CC", 13: "+" });
+boardLogic.numberOfPlayers = 2;
+boardLogic.totalNumberOfRounds = 0;
+boardLogic.totalPlayTime = 0;
 
 
 boardLogic.init = function () {
     boardLogic.runId = 0;
+    boardLogic.totalNumberOfRounds = 0;
+    boardLogic.totalPlayTime = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
-    boardLogic.skipTurn = false;
+    boardLogic.openTaki = false;
     for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
         if (i != 2) {
             for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
@@ -94,17 +99,23 @@ boardLogic.getFirsdHandOfCards = function () {
     return boardLogic.getSomeCardsFromDeck(boardLogic.firstHandDivision);
 }
 
-boardLogic.drowCardsFromDeck = function () {
-    var retCards = [];
-    var numberOfCardsToDrow = 1;
-    if (boardLogic.punishNumber > 0) {
-        numberOfCardsToDrow = boardLogic.punishNumber;
-    }
+boardLogic.drowCardsFromDeck = function (iPlayerId) {
+    if (boardLogic.checkPlayersTurn(iPlayerId)) {
+        var retCards = [];
+        var numberOfCardsToDrow = 1;
+        if (boardLogic.punishNumber > 0) {
+            numberOfCardsToDrow = boardLogic.punishNumber;
+        }
 
-    if (utility.debug) {
-        console.log(boardLogic.deckOfCards);
+        if (utility.debug) {
+            console.log(boardLogic.deckOfCards);
+        }
+        boardLogic.setPlayerTurn(true);
+        return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
     }
-    return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
+    else {
+        return [];
+    }
 }
 
 boardLogic.trowCardToTrash = function (iCard) {
@@ -114,12 +125,17 @@ boardLogic.trowCardToTrash = function (iCard) {
     boardLogic.trashDeck.push(iCard);
 }
 
-boardLogic.getCardFromPlayer = function (iCard) {
-    if (boardLogic.cardRooles(iCard)) {
-        boardLogic.trowCardToTrash(boardLogic.currentCard);
-        boardLogic.currentCard = iCard;
-        boardLogic.printCurrentCard();
-        return true;
+boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
+    if (boardLogic.checkPlayersTurn(iPlayerId))
+    {
+        if (boardLogic.cardRooles(iCard))
+        {
+            boardLogic.trowCardToTrash(boardLogic.currentCard);
+            boardLogic.currentCard = iCard;
+            boardLogic.setPlayerTurn(false);
+            boardLogic.printCurrentCard();
+            return true;
+        }
     }
 
     return false;
@@ -133,17 +149,70 @@ boardLogic.printCurrentCard = function () {
 
 boardLogic.cardRooles = function (iCard){
     // turn logic here, also mark the flags like +2 or the stop or + etc...
-    if (iCard.color === boardLogic.currentCard.color || iCard.number === boardLogic.currentCard.number) {
+    if (boardLogic.currentCard.number === 2) {
+        // only +2 is plyble at this point
+        return iCard.number === 2;
+    }
+    else if (iCard.number === 12) {
+        // change color, player need to select
+    }
+    else if (iCard.color === boardLogic.currentCard.color || iCard.number === boardLogic.currentCard.number) {
         if (iCard.number == 2) {
             boardLogic.punishNumber += 2;
         }
-        else if (iCard.number == 11) {
-            boardLogic.skipTurn = true;
+        else if (iCard.number == 10) {
+            boardLogic.openTaki = true;
         }
         return true;
     }
 
     return false;
+}
+
+boardLogic.closeTaki = function () {
+    boardLogic.openTaki = false;
+}
+
+boardLogic.setPlayerTurn = function (iIsFromDeck) {
+    if (iIsFromDeck) {
+        boardLogic.currentPlayer++;
+    }
+    else {
+        if (boardLogic.openTaki || boardLogic.currentCard.number === 13) {
+            // do not change player
+        }
+        else {
+            boardLogic.currentPlayer++;
+            if (boardLogic.currentCard.number === 11) {
+                // skip player
+                boardLogic.currentPlayer++;
+            }
+        }
+    }
+
+    boardLogic.currentPlayer = boardLogic.currentPlayer % boardLogic.numberOfPlayers;
+
+    if (utility.debug) {
+        console.log("current Player turn Id is: " + boardLogic.currentPlayer);
+    }
+    setTimeout(boardLogic.makeAiMove, 2000);
+}
+
+boardLogic.makeAiMove = function () {
+    if (boardLogic.currentPlayer === aiPlayer.playerId) {
+        if (utility.debug) {
+            console.log("calling for Ai to make move");
+        }
+
+        aiPlayer.makeMove();
+    }
+}
+
+boardLogic.checkPlayersTurn = function (iPlayerId) {
+    if (!boardLogic.currentPlayer) {
+        boardLogic.currentPlayer = iPlayerId;
+    }
+    return boardLogic.currentPlayer === iPlayerId
 }
 
 // UI manipulation section
@@ -154,6 +223,7 @@ boardLogic.loadUI = function () {
 
     boardLogic.init();
     playerLogic.init();
+    aiPlayer.init();
 
     ////////
     // TODO: remove this code
