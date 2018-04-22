@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="CSS/Board.css">
     <link rel="stylesheet" href="CSS/GeneralStyle.css" />
+    <link rel="stylesheet" href="CSS/BoardLayout.css" />
 
 </head>
 <body>
@@ -26,11 +27,27 @@
         <div class="board">
             <!--<div><button type="button" id="drowCard">Get Card</button> </div>-->
             <div id="botCards" class="section bot-cards"></div>
-            <div class="section central-board">
-                <div id="deckCards" class="card deck-wrapper" style="display: flex">
-                    <div class="cards-deck"></div>
+            <div class="section central-ui">
+                <div class="statistics">
+                    <span id="time">00:00</span>
                 </div>
-                <div id="currentCard" class="card"></div>
+                <div class="central-board">
+                    <div id="deckCards" class="card deck-wrapper" style="display: flex">
+                        <div class="cards-deck"></div>
+                    </div>
+                    <div id="currentCard" class="card"></div>
+                </div>
+                <div class="user-selection">
+                    <div class="color-selection" style="display:none">
+                        <button type="button" class="color-button red"></button>
+                        <button type="button" class="color-button yellow"></button>
+                        <button type="button" class="color-button green"></button>
+                        <button type="button" class="color-button blue"></button>
+                    </div>
+                    <div class="close-taki" style="display:none">
+                        <button type="button" class="end-taki-button"></button>
+                    </div>
+                </div>
             </div>
             <div id="playersCards" class="section player-cards"></div>
         </div>

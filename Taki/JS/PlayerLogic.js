@@ -50,6 +50,7 @@ playerLogic.drowCardsFromDeck = function () {
 playerLogic.initUIData = function () {
     document.getElementById("deckCards").onclick = playerLogic.drowCardsFromDeck;
 }
+
 playerLogic.printCadsToUser = function () {
     var playersCards = document.getElementById("playersCards");
     playersCards.innerHTML = "";

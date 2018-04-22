@@ -18,12 +18,23 @@ utility.getCardHtml = function (iCard, iClickFunc) {
     var color = boardLogic.cardColors[iCard.color];
     cardDiv.className = option + " " + color + " 0" + iCard.id + " card taki-card";
 
+    var innerUpperDiv = document.createElement('div');
+    innerUpperDiv.className = 'card-small-option card-upper-option';
+    innerUpperDiv.innerText = option;
+
+    cardDiv.appendChild(innerUpperDiv);
+
 
     var innerDiv = document.createElement('div');
-    innerDiv.className = 'cardOption';
+    innerDiv.className = 'card-option';
     innerDiv.innerText = option;
 
     cardDiv.appendChild(innerDiv);
+
+    var innerLowerDiv = document.createElement('div');
+    innerLowerDiv.className = 'card-small-option card-lower-option';
+    innerLowerDiv.innerText = option;
+    cardDiv.appendChild(innerLowerDiv);
 
     return cardDiv;
 }
@@ -62,42 +73,32 @@ utility.addEvent = function (object, type, callback) {
 utility.manageCardsmargin = function (iSelector) {
     var cards = document.querySelectorAll(iSelector);
     if (cards && cards.length > 0) {
-        var calculatedMargin = utility.calculateMargininCards(cards.length, cards[0].clientWidth);
+        var calculatedMargin = utility.calculateMargininCards(cards.length, 140);
         for (var i = 0; i < cards.length; i++) {
             cards[i].style.marginRight = calculatedMargin + "px";
+            cards[i].style.width = "140px"; // in some cases the width adjust to teh size before the update, forcing the card sizes
         }
-
-        //if (utility.debug) {
-        //    console.log(document.body.clientWidth + " /  " + cards.length + "   -  " + cards[0].clientWidth + "   ==  " + calculatedMargin);
-        //}
     }
 }
 
 utility.calculateMargininCards = function (numberOfCards, cardWidth) {
-    return ((((document.body.clientWidth - 50) / numberOfCards) - cardWidth) / 1) - 4;
+    var calculatedMargin = ((((document.body.clientWidth - 50) / numberOfCards) - cardWidth) / 1) - 4;
+    if (calculatedMargin > -10) {
+        calculatedMargin = -10;
+    }
+    return calculatedMargin;
 }
 
+utility.displayStats =  function (display) {
+    utility.timer = 0;
+    setInterval(function () {
+        utility.timer++;
+        minutes = parseInt(utility.timer / 60, 10)
+        seconds = parseInt(utility.timer % 60, 10);
 
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
 
-///external server call - not relevent in file system proj
-
-//utility.getHTMLData = function (file, iRetFunction) {
-//    if (file) {
-//        var xhttp = new XMLHttpRequest();
-//        xhttp.onreadystatechange = function () {
-//            if (this.readyState == 4) {
-//                if (this.status == 200)
-//                {
-//                    iRetFunction(this.responseText);
-//                }
-//                else if (this.status == 404)
-//                {
-//                    iRetFunction("Page not found.");
-//                }
-//            }
-//        }
-//        xhttp.open("GET", file, true);
-//        xhttp.send();
-//        return;
-//    }
-//}
+        display.textContent = minutes + ":" + seconds;
+    }, 1000);
+}

@@ -1,0 +1,74 @@
+﻿.central-ui{
+    display:flex;
+    flex: 4;
+    justify-content: center;
+    align-items: center;
+}
+
+.statistics{
+    width: 33%;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-selection{
+    display:flex;
+    width: 33%;
+    justify-content: center;
+    align-items: center;
+}
+
+.central-board{
+    height: 100%;
+    width: 33%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
+}
+
+.board{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid;
+    height: 98vh;
+    flex-direction: column;
+}
+
+.board .section {
+    width: 100%;
+    border: 1px solid;
+}
+
+.end-taki-button{
+    width: 150px;
+    height: 150px;
+}
+
+.color-selection{
+    flex-flow : wrap;
+    transform: rotate(45deg);
+    width: 220px;
+}
+
+.color-selection .color-button{
+    width: 100px;
+    height: 100px;
+}
+
+button.green{ 
+    background-color:green;
+}
+
+button.red{ 
+    background-color: red;
+}
+
+button.yellow{
+    background-color:yellow;
+}
+
+button.blue{
+    background-color:blue;
+}

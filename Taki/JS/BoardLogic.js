@@ -4,15 +4,21 @@ boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
-boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "Taki", 11: "Stop", 12: "CC", 13: "+" });
+boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "TAKI", 11: "Stop", 12: "CC", 13: "+" });
 boardLogic.numberOfPlayers = 2;
 boardLogic.totalNumberOfRounds = 0;
 boardLogic.totalPlayTime = 0;
+boardLogic.changColorSelection = 4;
+
+////****
+///  Oppen Issues:
+///      Playing Taki is not finilize + change Color os not working! need to add statistics
+///******
 
 
 boardLogic.init = function () {
     boardLogic.runId = 0;
-    boardLogic.totalNumberOfRounds = 0;
+    boardLogic.totalNumberOfPlay = 0;
     boardLogic.totalPlayTime = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
@@ -132,8 +138,9 @@ boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
         {
             boardLogic.trowCardToTrash(boardLogic.currentCard);
             boardLogic.currentCard = iCard;
-            boardLogic.setPlayerTurn(false);
             boardLogic.printCurrentCard();
+            boardLogic.openUISelection();
+            boardLogic.setPlayerTurn(false);
             return true;
         }
     }
@@ -153,10 +160,11 @@ boardLogic.cardRooles = function (iCard){
         // only +2 is plyble at this point
         return iCard.number === 2;
     }
-    else if (iCard.number === 12) {
-        // change color, player need to select
+    else if (boardLogic.openTaki) {
+        // only taki color card are allow
+        return iCard.color === boardLogic.currentCard.color;
     }
-    else if (iCard.color === boardLogic.currentCard.color || iCard.number === boardLogic.currentCard.number) {
+    else if (iCard.color === boardLogic.currentCard.color || iCard.color === boardLogic.changColorSelection || iCard.number === boardLogic.currentCard.number) {
         if (iCard.number == 2) {
             boardLogic.punishNumber += 2;
         }
@@ -171,10 +179,13 @@ boardLogic.cardRooles = function (iCard){
 
 boardLogic.closeTaki = function () {
     boardLogic.openTaki = false;
+    var closeTaki = document.querySelector(".close-taki");
+    closeTaki.style.display = utility.displayHidden;
+    boardLogic.setPlayerTurn(true);
 }
 
-boardLogic.setPlayerTurn = function (iIsFromDeck) {
-    if (iIsFromDeck) {
+boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
+    if (iIsForceNextPlayer) {
         boardLogic.currentPlayer++;
     }
     else {
@@ -191,11 +202,15 @@ boardLogic.setPlayerTurn = function (iIsFromDeck) {
     }
 
     boardLogic.currentPlayer = boardLogic.currentPlayer % boardLogic.numberOfPlayers;
+    boardLogic.totalNumberOfPlay++;
 
     if (utility.debug) {
-        console.log("current Player turn Id is: " + boardLogic.currentPlayer);
+        console.log("current Player turn Id is: " + boardLogic.currentPlayer + "  turn Number: " + boardLogic.totalNumberOfPlay);
     }
-    setTimeout(boardLogic.makeAiMove, 2000);
+    if (boardLogic.currentCard.number != 12) {
+        // only if not wating to change color
+        setTimeout(boardLogic.makeAiMove, 2000);
+    }
 }
 
 boardLogic.makeAiMove = function () {
@@ -225,14 +240,17 @@ boardLogic.loadUI = function () {
     playerLogic.init();
     aiPlayer.init();
 
-    ////////
-    // TODO: remove this code
-    // test display all the cards on the page
-    ////////
+    display = document.querySelector('#time');
+    utility.displayStats(display);
 
-    var startBtn = document.getElementById("drowCard");
-    if (startBtn) {
-        startBtn.onclick = testDrowingCard;
+    var endTakiBtn = document.querySelector(".end-taki-button");
+    endTakiBtn.onclick = boardLogic.closeTaki;
+
+    var colrBtns = document.querySelectorAll(".color-button");
+    if (colrBtns && colrBtns.length > 0) {
+        for (var i = 0; i < colrBtns.length; i++) {
+            colrBtns[i].onclick = boardLogic.onSelectedColorclick;
+        }
     }
 }
 
@@ -240,12 +258,38 @@ boardLogic.removeFromView = function () {
     boardLogic.divInDOM.style.display = utility.displayHidden;
 }
 
-
-function testDrowingCard() {
-    var currentCard = document.getElementById("currentCard");
-    if (boardLogic.currentCard != undefined) {
-        boardLogic.trowCardToTrash(boardLogic.currentCard);
+boardLogic.openUISelection = function () {
+    if (aiPlayer && aiPlayer.playerId === boardLogic.currentPlayer) {
+    // AI no need to show the UI extentions
+        return;
     }
-    boardLogic.currentCard = boardLogic.getCardFromDeck();
-    boardLogic.printCurrentCard();
+    if (boardLogic.currentCard.number === 12) {
+        // CC
+        var colorSelection = document.querySelector(".color-selection");
+        colorSelection.style.display = utility.displayActive;
+    }
+    else if (boardLogic.currentCard.number === 10) {
+        // TAKI
+        var closeTaki = document.querySelector(".close-taki");
+        closeTaki.style.display = utility.displayActive;
+    }
+}
+
+boardLogic.onSelectedColorclick = function (iElement) {
+    var color = iElement.currentTarget.classList[1];
+    var colorNumber = 4;
+    for (var i = 0; i < Object.keys(boardLogic.cardColors).length; i++) {
+        if (boardLogic.cardColors[i].toUpperCase() == color.toUpperCase()){
+            colorNumber = i;
+        }
+    }
+    if (colorNumber < 4 && colorNumber > -1) {
+        boardLogic.changColorSelection = colorNumber;
+    }
+
+    var colorSelection = document.querySelector(".color-selection");
+    colorSelection.style.display = utility.displayHidden;
+
+    boardLogic.setPlayerTurn(true);
+    setTimeout(boardLogic.makeAiMove, 2000);
 }

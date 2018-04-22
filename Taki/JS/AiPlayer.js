@@ -23,6 +23,15 @@ aiPlayer.makeMove = function () {
                 index = i;
             }
         }
+        else if (boardLogic.openTaki) {
+            // since taki is open, only same color.
+            if (boardLogic.currentCard.color === card.color) {
+                if (selectCard == null) {
+                    selectCard = card;
+                    index = i;
+                }
+            }
+        }
         else {
             if (changeColor == null) {
                 if (boardLogic.currentCard.number === 12) {
@@ -45,15 +54,24 @@ aiPlayer.makeMove = function () {
     });
 
     if (selectCard == null) {
-        var cards = boardLogic.drowCardsFromDeck(aiPlayer.playerId);
-        if (cards && cards.length > 0) {
-            aiPlayer.Hand = aiPlayer.Hand.concat(cards);
+        if (boardLogic.openTaki) {
+            boardLogic.closeTaki();
+            selectCard = "AI close taki";
         }
         else {
-            if (utility.debug) {
-                console.log("AI try to pull card not in turn");
+            var cards = boardLogic.drowCardsFromDeck(aiPlayer.playerId);
+            if (cards && cards.length > 0) {
+                aiPlayer.Hand = aiPlayer.Hand.concat(cards);
             }
+            else {
+                if (utility.debug) {
+                    console.log("AI try to pull card not in turn");
+                }
+            }
+            selectCard = "take card form deck";
         }
+
+        
     }
     else if (changeColor != null) {
         // play the change color
@@ -74,11 +92,11 @@ aiPlayer.makeMove = function () {
 }
 
 aiPlayer.printAiCards = function () {
-    var playersCards = document.getElementById("botCards");
-    playersCards.innerHTML = "";
-    for (var i = 0; i < playerLogic.Hand.length; i++) {
-        var card = playerLogic.Hand[i];
-        playersCards.appendChild(utility.flipedCard());
+    var aisCards = document.getElementById("botCards");
+    aisCards.innerHTML = "";
+    for (var i = 0; i < aiPlayer.Hand.length; i++) {
+        var card = aiPlayer.Hand[i];
+        aisCards.appendChild(utility.flipedCard());
     }
     utility.manageCardsmargin(".bot-card-display");
 }

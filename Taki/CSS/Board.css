@@ -11,35 +11,13 @@
    justify-content: center;
    bottom:10px;
    width:100%;
-   flex: 3;
+   flex: 2;
 }
 
 .bot-card-display{
     border: 1px solid black;
 }
 
-.board{
-    display: none;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid;
-    height: 98vh;
-    flex-direction: column;
-}
-
-.board .section {
-    width: 100%;
-    border: 1px solid;
-    height: 220px;
-}
-
-.central-board{
-    height: 100px;
-    flex: 4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .deck-wrapper{
     align-items: center;
@@ -61,26 +39,47 @@
     margin: 5px;
 }
 
-#currentCard #playersHandCard{
-    display: inline-block;
-}
 
 .card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: white;
+    flex-direction: column;
     width: 140px;
     height: 200px;
     border-radius: 10px;
-    display: inline-block;
+    font-family: "Impact";
+    text-shadow: 3px 3px 4px #000000;
     position: relative;
 }
 
 .taki-card{
-    text-align: center;
     font: bold;
-    font-size: 60px;
     border: 1px solid black;
 }
 
+.card-option{
+    flex: 5;
+    font-size: 90px;
+}
+
+.card-small-option{
+    display:flex;
+    align-items: center;
+    flex: 2;
+    font-size: 30px;
+    width: 130px;
+}
+
+.card-upper-option{
+    justify-content: flex-start;
+}
+
+.card-lower-option{
+    justify-content: flex-start;
+    transform: rotate(180deg);
+}
 
 .player-cards .taki-card:hover{ 
     bottom: 60px;
