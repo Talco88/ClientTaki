@@ -1,5 +1,6 @@
 ﻿body {
     background-color: #1a8cff;
+    background: radial-gradient(#80bfff, #1a8cff ); 
 }
 
 .lobby button{

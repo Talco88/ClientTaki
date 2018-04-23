@@ -1,5 +1,6 @@
 ﻿var aiPlayer = {}
 aiPlayer.playerId = 1;
+aiPlayer.moveDelay = 1000;
 
 aiPlayer.init = function () {
     aiPlayer.Hand = boardLogic.getFirsdHandOfCards();
@@ -34,12 +35,14 @@ aiPlayer.makeMove = function () {
         }
         else {
             if (changeColor == null) {
-                if (boardLogic.currentCard.number === 12) {
+                if (card.number === 12) {
                     changeColor = card;
                 }
             }
-            if (boardLogic.currentCard.number === card.number || boardLogic.currentCard.color === card.color) {
-                if (selectCard == null) {
+            if (boardLogic.currentCard.number === card.number ||
+                (boardLogic.currentCard.color === card.color && boardLogic.changColorSelection === 4) ||
+                (boardLogic.changColorSelection < 4 && card.color === boardLogic.changColorSelection)) {
+                if (selectCard == null && card.number != 12) {
                     selectCard = card;
                     index = i;
                 }

@@ -4,15 +4,17 @@ boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
 boardLogic.punishNumber = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
-boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "TAKI", 11: "✋", 12: "CC", 13: "+" });
+boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "TAKI", 11: "Stop", 12: "CC", 13: "+" });
 boardLogic.numberOfPlayers = 2;
 boardLogic.totalNumberOfRounds = 0;
 boardLogic.totalPlayTime = 0;
 boardLogic.changColorSelection = 4;
+boardLogic.debugdeckOfCards = false;
 
 ////****
 ///  Oppen Issues:
 ///      Playing Taki is not finilize + change Color os not working! need to add statistics
+////  AI not responceing to change color and cant play it itself
 ///******
 
 
@@ -23,6 +25,7 @@ boardLogic.init = function () {
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.openTaki = false;
+    boardLogic.isGameFinish = false;
     for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
         if (i != 2) {
             for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
@@ -113,7 +116,7 @@ boardLogic.drowCardsFromDeck = function (iPlayerId) {
             numberOfCardsToDrow = boardLogic.punishNumber;
         }
 
-        if (utility.debug) {
+        if (utility.debug && boardLogic.debugdeckOfCards) {
             console.log(boardLogic.deckOfCards);
         }
         boardLogic.setPlayerTurn(true);
@@ -171,6 +174,12 @@ boardLogic.cardRooles = function (iCard){
         else if (iCard.number == 10) {
             boardLogic.openTaki = true;
         }
+
+        if (boardLogic.currentCard.number === 12) {
+            // the move after the change color need to reset it.
+            boardLogic.changColorSelection = 4;
+            boardLogic.removechangeColor();
+        }
         return true;
     }
 
@@ -208,8 +217,16 @@ boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
         console.log("current Player turn Id is: " + boardLogic.currentPlayer + "  turn Number: " + boardLogic.totalNumberOfPlay);
     }
     if (boardLogic.currentCard.number != 12) {
-        // only if not wating to change color
-        setTimeout(boardLogic.makeAiMove, 2000);
+        // only if not wating to change color   
+        setTimeout(boardLogic.makeAiMove, aiPlayer.moveDelay);
+    }
+
+    if (aiPlayer.Hand.length === 0 || playerLogic.Hand.length === 0) {
+        boardLogic.isGameFinish = true;
+        if (utility.debug) {
+            var winner = (aiPlayer.Hand.length === 0)? "computer" : "Human";
+            console.log("game finish, and " + winner + " won!!");
+        }
     }
 }
 
@@ -224,8 +241,20 @@ boardLogic.makeAiMove = function () {
 }
 
 boardLogic.checkPlayersTurn = function (iPlayerId) {
+    if (boardLogic.isGameFinish) {
+        if (utility.debug) {
+            console.log("game finish, unable to make move!");
+        }
+        return;
+    }
+
     if (!boardLogic.currentPlayer) {
         boardLogic.currentPlayer = iPlayerId;
+    }
+
+    if (boardLogic.currentPlayer != iPlayerId && iPlayerId != aiPlayer.playerId) {
+        // playr try to play, in case AI miss a turn
+        setTimeout(boardLogic.makeAiMove, aiPlayer.moveDelay);
     }
     return boardLogic.currentPlayer === iPlayerId
 }
@@ -275,6 +304,11 @@ boardLogic.openUISelection = function () {
     }
 }
 
+boardLogic.removechangeColor = function () {
+    var colorSelection = document.getElementById("currentCard");
+    colorSelection.style.color = null;
+}
+
 boardLogic.onSelectedColorclick = function (iElement) {
     var color = iElement.currentTarget.classList[1];
     var colorNumber = 4;
@@ -290,6 +324,8 @@ boardLogic.onSelectedColorclick = function (iElement) {
     var colorSelection = document.querySelector(".color-selection");
     colorSelection.style.display = utility.displayHidden;
 
-    boardLogic.setPlayerTurn(true);
-    setTimeout(boardLogic.makeAiMove, 2000);
+    var colorSelection = document.getElementById("currentCard");
+    colorSelection.style.color = boardLogic.cardColors[colorNumber];
+
+    setTimeout(boardLogic.makeAiMove, aiPlayer.moveDelay);
 }

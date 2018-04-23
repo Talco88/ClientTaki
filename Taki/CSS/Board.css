@@ -8,8 +8,9 @@
 
 .player-cards{
    display: flex;
+   align-items: center;
    justify-content: center;
-   bottom:10px;
+   /*bottom:10px;*/
    width:100%;
    flex: 2;
 }
@@ -82,7 +83,10 @@
 }
 
 .player-cards .taki-card:hover{ 
-    bottom: 60px;
+    bottom: 10px;
+    width: 155px;
+    height: 215px;
+    z-index: 1000;
     background-color: lightblue;
 }
 
