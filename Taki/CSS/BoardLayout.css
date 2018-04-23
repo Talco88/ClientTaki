@@ -44,6 +44,8 @@
 .end-taki-button{
     width: 150px;
     height: 150px;
+    font-size: 40px;
+    border-radius: 60px;
 }
 
 .color-selection{
@@ -55,6 +57,8 @@
 .color-selection .color-button{
     width: 100px;
     height: 100px;
+    margin: 2px;
+    border-radius: 7px;
 }
 
 button.green{ 
