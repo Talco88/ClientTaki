@@ -3,6 +3,7 @@
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
 utility.debug = true;
+utility.statisticInterval = 0;
 
 
 utility.getCardHtml = function (iCard, iClickFunc) {
@@ -91,14 +92,43 @@ utility.calculateMargininCards = function (numberOfCards, cardWidth) {
 
 utility.displayStats =  function (display) {
     utility.timer = 0;
-    setInterval(function () {
+    utility.statisticInterval = setInterval(function () {
         utility.timer++;
-        minutes = parseInt(utility.timer / 60, 10)
-        seconds = parseInt(utility.timer % 60, 10);
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+        var display = document.querySelector('#time');
+        display.textContent = utility.parsTimeToMinAndSec(utility.timer);
+        
+        displayNumberOfTurns = document.querySelector('#numberOfTurns');
+        displayNumberOfTurns.textContent = boardLogic.totalNumberOfPlay;
 
-        display.textContent = minutes + ":" + seconds;
+        var avrageTime;
+        if (boardLogic.totalNumberOfPlay === 0) {
+            avrageTime = utility.timer;
+        }
+        else {
+            avrageTime = utility.timer / boardLogic.totalNumberOfPlay
+        }
+        displayPerTurn = document.querySelector('#timePerTrun');
+        displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTime));
+
     }, 1000);
+}
+
+utility.parsTimeToMinAndSec = function (iTime) {
+    minutes = parseInt(iTime / 60, 10)
+    seconds = parseInt(iTime % 60, 10);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return minutes + ":" + seconds;
+}
+
+utility.finishGame = function () {
+    if (boardLogic.isGameFinish) {
+        clearInterval(utility.statisticInterval);
+        var finishGameBtb = document.querySelector('.finish-game');
+        finishGameBtb.style.display = utility.displayActive;
+
+    }
 }

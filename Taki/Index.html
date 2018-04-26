@@ -29,7 +29,12 @@
             <div id="botCards" class="section bot-cards"></div>
             <div class="section central-ui">
                 <div class="statistics">
-                    <span id="time">00:00</span>
+                    Total game time is: <span id="time">00:00</span><br />
+                    Total noumber of turns: <span id="numberOfTurns">0</span><br />
+                    Avrage time per-turn: <span id="timePerTrun"> 00:00</span> <br />
+                    <div class="finish-game" style="display:none">
+                        <button type="button" class="in-game-btn finis-game-btn">Finish Game</button>
+                    </div>
                 </div>
                 <div class="central-board">
                     <div id="deckCards" class="card deck-wrapper" style="display: flex">
@@ -45,7 +50,7 @@
                         <button type="button" class="color-button green"></button>
                     </div>
                     <div class="close-taki" style="display:none">
-                        <button type="button" class="end-taki-button">Close TAKI</button>
+                        <button type="button" class="end-taki-button in-game-btn">Close TAKI</button>
                     </div>
                 </div>
             </div>
