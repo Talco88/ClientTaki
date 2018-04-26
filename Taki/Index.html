@@ -8,6 +8,7 @@
     <script src="JS/Platform.js"></script>
     <script src="JS/Lobby.js"></script>
     <script src="JS/BoardLogic.js"></script>
+    <script src="JS/BoardUI.js"></script>
     <script src="JS/PlayerLogic.js"></script>
     <script src="JS/AiPlayer.js"></script>
 
@@ -29,9 +30,10 @@
             <div id="botCards" class="section bot-cards"></div>
             <div class="section central-ui">
                 <div class="statistics">
-                    Total game time is: <span id="time">00:00</span><br />
-                    Total noumber of turns: <span id="numberOfTurns">0</span><br />
-                    Avrage time per-turn: <span id="timePerTrun"> 00:00</span> <br />
+                    <p>Total game time is: <span id="time">00:00</span></p>
+                    <p>Total noumber of turns: <span id="numberOfTurns">0</span></p>
+                    <p>Avrage time per-turn: <span id="timePerTrun"> 00:00</span> </p>
+                    <p>Currently Playing: <span id="playerNume"></span></p>
                     <div class="finish-game" style="display:none">
                         <button type="button" class="in-game-btn finis-game-btn">Finish Game</button>
                     </div>

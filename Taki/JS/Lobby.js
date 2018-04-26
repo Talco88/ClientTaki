@@ -6,7 +6,7 @@ lobby.load = function () {
 
     var startBtn = document.getElementById("startGameBtn");
     if (startBtn) {
-        startBtn.onclick = boardLogic.loadUI;
+        startBtn.onclick = boardUI.loadUI;
     }
     else {
         alert("Error Parsing lobby html!");

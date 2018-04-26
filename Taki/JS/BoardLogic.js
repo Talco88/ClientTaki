@@ -141,7 +141,7 @@ boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
             boardLogic.trowCardToTrash(boardLogic.currentCard);
             boardLogic.currentCard = iCard;
             boardLogic.printCurrentCard();
-            boardLogic.openUISelection();
+            boardUI.openUISelection();
             boardLogic.setPlayerTurn(false);
             return true;
         }
@@ -177,7 +177,7 @@ boardLogic.cardRooles = function (iCard){
         if (boardLogic.currentCard.number === 12) {
             // the move after the change color need to reset it.
             boardLogic.changColorSelection = 4;
-            boardLogic.removechangeColor();
+            boardUI.removechangeColor();
         }
         return true;
     }
@@ -282,6 +282,7 @@ boardLogic.isCardInTheSameNumberExsist = function (iCards, iNumber) {
 }
 
 // UI manipulation section
+/*
 boardLogic.loadUI = function () {
     lobby.removeFromView();
     boardLogic.divInDOM = document.querySelector(".board");
@@ -341,17 +342,6 @@ boardLogic.onSelectedColorclick = function (iElement) {
     }
 
     boardLogic.setSelectedChangeColor(colorNumber);
-    /*
-    if (colorNumber < 4 && colorNumber > -1) {
-        boardLogic.changColorSelection = colorNumber;
-    }
-
-    var colorSelection = document.querySelector(".color-selection");
-    colorSelection.style.display = utility.displayHidden;
-
-    var colorSelection = document.getElementById("currentCard");
-    colorSelection.style.color = boardLogic.cardColors[colorNumber];
-    */
     boardLogic.makeAiMove();
 }
 
@@ -366,3 +356,4 @@ boardLogic.setSelectedChangeColor = function (iColorNumber) {
     var colorSelection = document.getElementById("currentCard");
     colorSelection.style.color = boardLogic.cardColors[iColorNumber];
 }
+*/

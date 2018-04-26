@@ -2,7 +2,7 @@
 
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
-utility.debug = true;
+utility.debug = false;
 utility.statisticInterval = 0;
 
 
@@ -98,7 +98,7 @@ utility.displayStats =  function (display) {
         var display = document.querySelector('#time');
         display.textContent = utility.parsTimeToMinAndSec(utility.timer);
         
-        displayNumberOfTurns = document.querySelector('#numberOfTurns');
+        var displayNumberOfTurns = document.querySelector('#numberOfTurns');
         displayNumberOfTurns.textContent = boardLogic.totalNumberOfPlay;
 
         var avrageTime;
@@ -108,8 +108,20 @@ utility.displayStats =  function (display) {
         else {
             avrageTime = utility.timer / boardLogic.totalNumberOfPlay
         }
-        displayPerTurn = document.querySelector('#timePerTrun');
+        var displayPerTurn = document.querySelector('#timePerTrun');
         displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTime));
+
+
+        var displayActivePlayer = document.querySelector('#playerNume');
+        var currentPlayer;
+
+        if (boardLogic.isGameFinish) {
+            currentPlayer = "Game Finished";
+        }
+        else {
+            currentPlayer = (boardLogic.currentPlayer && boardLogic.currentPlayer === aiPlayer.playerId) ? "AI" : "You";
+        }
+        displayActivePlayer.textContent = currentPlayer;
 
     }, 1000);
 }

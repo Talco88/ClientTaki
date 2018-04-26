@@ -89,7 +89,7 @@ aiPlayer.makeMove = function () {
                 aiPlayer.Hand.splice(changecolorIndex, 1);
             }
             var selectedColor = aiPlayer.getColorWithMaxCards();
-            boardLogic.setSelectedChangeColor(selectedColor);
+            boardUI.setSelectedChangeColor(selectedColor);
 
             selectCard = "change color with color: " + boardLogic.cardColors[selectedColor];
         }
