@@ -12,7 +12,7 @@ aiPlayer.drowCardsFromDeck = function () {
 }
 
 aiPlayer.makeMove = function () {
-    var index = 0;
+    var index = -1;
     var changecolorIndex = 0;
     var i = 0;
     var selectCard = null;
@@ -20,49 +20,119 @@ aiPlayer.makeMove = function () {
 
     // validate that that the turn is the ai after the delay.
     if (boardLogic.currentPlayer === aiPlayer.playerId) {
-        aiPlayer.Hand.forEach(function (card) {
-            if (boardLogic.currentCard.number === 2) {
-                // open card 2+, only 2+ is valid chois
-                if (boardLogic.currentCard.number === card.number) {
-                    selectCard = card;
-                    index = i;
+        if (boardLogic.openTaki &&
+            (boardLogic.isCardInTheSameNumberExsist(aiPlayer.Hand, 11) ||
+             boardLogic.isCardInTheSameNumberExsist(aiPlayer.Hand, 13))) {
+            // open taki, posible to put '+' or stop, looking for best option
+            var numberOfPlus = 0;
+            var numberOfStops = 0;
+            var numberOfPlusInTakiColor = 0;
+            var numberOfStopsInTakiColor = 0;
+            var lookForNumber = -1;
+            var plusIndex = -1;
+            var stopIndex = -1;
+            var regularCardIndex = -1;
+            var subSelectionIndex = 0;
+
+            aiPlayer.Hand.forEach(function (specialCard) {
+                if (specialCard.number === 11) {
+                    numberOfStops++;
+                }
+                if (specialCard.number === 13) {
+                    numberOfPlus++;
+                }
+
+                if (specialCard.color === boardLogic.currentCard.color) {
+                    if (specialCard.number === 13) {
+                        numberOfPlusInTakiColor++;
+                        plusIndex = subSelectionIndex;
+                    }
+                    else if (specialCard.number === 11) {
+                        numberOfStopsInTakiColor++;
+                        stopIndex = subSelectionIndex;
+                    }
+                    else {
+                        regularCardIndex = subSelectionIndex;
+                    }
+                }
+                subSelectionIndex++;
+            });
+
+            if (numberOfStopsInTakiColor > 0 && numberOfStops > numberOfStopsInTakiColor) {
+                // posible stop bridges
+                index = stopIndex;
+                if (regularCardIndex > -1) {
+                    index = regularCardIndex;
                 }
             }
-            else if (boardLogic.openTaki) {
-                // since taki is open, only same color.
-                if (boardLogic.currentCard.color === card.color) {
-                    if (selectCard == null) {
+            else if (numberOfPlusInTakiColor > 0 && numberOfPlus > numberOfPlusInTakiColor) {
+                //posible '+' bridges
+                index = plusIndex;
+                if (regularCardIndex > -1) {
+                    index = regularCardIndex;
+                }
+            }
+
+
+            if (index < 0) {
+                // bridge is not possible, play the special cards now
+                if (numberOfStopsInTakiColor > 0) {
+                    index = stopIndex;
+                }
+                else if (numberOfPlusInTakiColor > 0) {
+                    index = plusIndex;
+                }
+            }
+
+            if (index > -1) {
+                selectCard = aiPlayer.Hand[index];
+            }
+        }
+
+        if (selectCard == null) {
+            aiPlayer.Hand.forEach(function (card) {
+                if (boardLogic.currentCard.number === 2) {
+                    // open card 2+, only 2+ is valid chois
+                    if (boardLogic.currentCard.number === card.number) {
                         selectCard = card;
                         index = i;
                     }
                 }
-            }
-            else {
-                if (changeColor == null) {
-                    if (card.number === 12) {
-                        changeColor = card;
-                        changecolorIndex = i;
-                    }
-                }
-                if (boardLogic.currentCard.number === card.number ||
-                    (boardLogic.currentCard.color === card.color && boardLogic.changColorSelection === 4) ||
-                    (boardLogic.changColorSelection < 4 && card.color === boardLogic.changColorSelection)) {
-                    if (selectCard == null && card.number != 12) {
-                        selectCard = card;
-                        index = i;
-                    }
-                    else if (card.number === 10 || card.number === 13) {
-                        if (boardLogic.isCardInTheSameColorExsist(aiPlayer.Hand, card.color)) {
-                            // + or taki are bette option...
+                else if (boardLogic.openTaki) {
+                    // since taki is open, only same color.
+                    if (boardLogic.currentCard.color === card.color) {
+                        if (selectCard == null) {
                             selectCard = card;
                             index = i;
                         }
                     }
                 }
-            }
-            i++;
-        });
-
+                else {
+                    if (changeColor == null) {
+                        if (card.number === 12) {
+                            changeColor = card;
+                            changecolorIndex = i;
+                        }
+                    }
+                    if (boardLogic.currentCard.number === card.number ||
+                        (boardLogic.currentCard.color === card.color && boardLogic.changColorSelection === 4) ||
+                        (boardLogic.changColorSelection < 4 && card.color === boardLogic.changColorSelection)) {
+                        if (selectCard == null && card.number != 12) {
+                            selectCard = card;
+                            index = i;
+                        }
+                        else if (card.number === 10 || card.number === 13) {
+                            if (boardLogic.isCardInTheSameColorExsist(aiPlayer.Hand, card.color)) {
+                                // + or taki are bette option...
+                                selectCard = card;
+                                index = i;
+                            }
+                        }
+                    }
+                }
+                i++;
+            });
+        }
         if (selectCard == null && changeColor == null) {
             if (boardLogic.openTaki) {
                 boardLogic.closeTaki();
@@ -109,6 +179,9 @@ aiPlayer.makeMove = function () {
 
     if (aiPlayer.Hand.length === 0) {
         boardLogic.checkGameFinish();
+    }
+    else if (aiPlayer.Hand.length === 1) {
+        boardLogic.updateOneCard();
     }
 }
 

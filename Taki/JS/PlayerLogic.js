@@ -26,6 +26,10 @@ playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
         if (iCardIndex > -1) {
             playerLogic.Hand.splice(iCardIndex, 1);
             boardUI.printPlayerCadsToUser(playerLogic.Hand);
+
+            if (playerLogic.Hand.length === 1) {
+                boardLogic.updateOneCard();
+            }
             boardLogic.checkGameFinish();
         }
         return "";

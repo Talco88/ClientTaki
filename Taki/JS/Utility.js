@@ -4,6 +4,7 @@ utility.displayHidden = 'none';
 utility.displayActive = 'flex';
 utility.debug = true;
 utility.statisticInterval = 0;
+utility.statisticTotalGameTime = 0;
 
 
 utility.getCardHtml = function (iCard, iClickFunc) {
@@ -62,6 +63,14 @@ utility.flipedCard = function () {
 }
 
 utility.onReSize = function () {
+    utility.updateBoardLayout();
+
+    if (utility.debug) {
+        console.log("resize activate");
+    }
+}
+
+utility.updateBoardLayout = function () {
     utility.manageCardsmargin(".player-cards .taki-card");
     utility.manageCardsmargin(".bot-card-display");
 }
@@ -103,12 +112,16 @@ utility.createStatisticInterval = function () {
 
 utility.displayStats =  function () {
     utility.timer++;
+    utility.statisticTotalGameTime++;
 
     var display = document.querySelector('#time');
     display.textContent = utility.parsTimeToMinAndSec(utility.timer);
         
     var displayNumberOfTurns = document.querySelector('#numberOfTurns');
     displayNumberOfTurns.textContent = boardLogic.totalNumberOfPlay;
+
+    var displayoneCard = document.querySelector('#oneCard');
+    displayoneCard.textContent = boardLogic.timesPlayerGotOneCard;
 
     var avrageTime;
     if (boardLogic.totalNumberOfPlay === 0) {
@@ -144,7 +157,6 @@ utility.parsTimeToMinAndSec = function (iTime) {
 
     return minutes + ":" + seconds;
 }
-
 
 
 utility.finishGame = function (iFinishText) {

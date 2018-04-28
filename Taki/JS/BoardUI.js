@@ -1,4 +1,5 @@
 ﻿var boardUI = {};
+boardUI.uiUpdateInterval = 0;
 
 // UI manipulation section
 boardUI.loadUI = function () {
@@ -27,6 +28,8 @@ boardUI.loadUI = function () {
             colrBtns[i].onclick = boardUI.onSelectedColorclick;
         }
     }
+
+    boardUI.uiUpdateInterval = setInterval(utility.updateBoardLayout, 2500);
 }
 
 boardUI.removeFromView = function () {

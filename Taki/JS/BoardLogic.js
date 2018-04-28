@@ -13,8 +13,8 @@ boardLogic.debugdeckOfCards = false;
 
 ////****
 ///  Oppen Issues:
-///      Playing Taki is not finilize  need to add statistics finish game is not checked in the rught place
-///      Game Finish not triggered if AI finish the game
+///      Display statistic finilize in the lobby
+///      Add: the avrage time to all the games
 ///******
 
 
@@ -22,9 +22,12 @@ boardLogic.init = function () {
     boardLogic.runId = 0;
     boardLogic.totalNumberOfPlay = 0;
     boardLogic.totalPlayTime = 0;
+    boardLogic.timesPlayerGotOneCard = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.openTaki = false;
+    boardLogic.currentPlayer = playerLogic.playerId;
+    boardUI.closeTaki();
     boardLogic.isGameFinish = false;
     for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
         if (i != 2) {
@@ -182,7 +185,7 @@ boardLogic.cardRooles = function (iCard){
 
 boardLogic.closeTaki = function () {
     boardLogic.openTaki = false;
-    boardLogic.setPlayerTurn(true);
+    boardLogic.setPlayerTurn(false);
 
     boardUI.closeTaki();
 }
@@ -208,6 +211,7 @@ boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
 
     boardLogic.currentPlayer = boardLogic.currentPlayer % boardLogic.numberOfPlayers;
     boardLogic.totalNumberOfPlay++;
+    boardLogic.totalNumberOfRounds++;
 
     if (utility.debug) {
         console.log("current Player turn Id is: " + boardLogic.currentPlayer + "  turn Number: " + boardLogic.totalNumberOfPlay);
@@ -312,6 +316,10 @@ boardLogic.isCardInTheSameNumberExsist = function (iCards, iNumber) {
         }
     });
     return retVal;
+}
+
+boardLogic.updateOneCard = function () {
+    boardLogic.timesPlayerGotOneCard++;
 }
 
 boardLogic.playerEndedGame = function () {
