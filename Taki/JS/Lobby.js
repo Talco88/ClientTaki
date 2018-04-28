@@ -1,6 +1,9 @@
 ﻿var lobby = {};
 
 lobby.load = function () {
+    var boardDiv = document.querySelector(".board");
+    boardDiv.style.display = utility.displayHidden;
+
     lobby.divInDOM = document.getElementById("lobby");
     lobby.divInDOM.style.display = utility.displayActive;
 

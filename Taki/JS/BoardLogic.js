@@ -14,6 +14,7 @@ boardLogic.debugdeckOfCards = false;
 ////****
 ///  Oppen Issues:
 ///      Playing Taki is not finilize  need to add statistics finish game is not checked in the rught place
+///      Game Finish not triggered if AI finish the game
 ///******
 
 
@@ -42,14 +43,14 @@ boardLogic.init = function () {
 
 boardLogic.openFirstCard = function () {
     var opendCard = boardLogic.getCardFromDeck();
-    while (opendCard.number === 2  || opendCard.number > 9) {
-        opendCard = boardLogic.getCardFromDeck();
 
-        // ADD card to trash
+    while (opendCard.number === 2 || opendCard.number > 9) {
+        boardLogic.trowCardToTrash(boardLogic.currentCard);
+        opendCard = boardLogic.getCardFromDeck();
     }
+
     boardLogic.currentCard = opendCard;
-    boardLogic.trowCardToTrash(boardLogic.currentCard);
-    boardLogic.printCurrentCard();
+    boardUI.printCurrentCard(boardLogic.currentCard);
 }
 
 boardLogic.addGeneratedCards = function (number, color) {
@@ -140,7 +141,7 @@ boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
         {
             boardLogic.trowCardToTrash(boardLogic.currentCard);
             boardLogic.currentCard = iCard;
-            boardLogic.printCurrentCard();
+            boardUI.printCurrentCard(boardLogic.currentCard);
             boardUI.openUISelection();
             boardLogic.setPlayerTurn(false);
             return true;
@@ -148,12 +149,6 @@ boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
     }
 
     return false;
-}
-
-boardLogic.printCurrentCard = function () {
-    var currentCard = document.getElementById("currentCard");
-    currentCard.innerHTML = "";
-    currentCard.appendChild(utility.getCardHtml(boardLogic.currentCard));
 }
 
 boardLogic.cardRooles = function (iCard){
@@ -187,17 +182,18 @@ boardLogic.cardRooles = function (iCard){
 
 boardLogic.closeTaki = function () {
     boardLogic.openTaki = false;
-    var closeTaki = document.querySelector(".close-taki");
-    closeTaki.style.display = utility.displayHidden;
     boardLogic.setPlayerTurn(true);
+
+    boardUI.closeTaki();
 }
 
 boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
     if (iIsForceNextPlayer) {
         boardLogic.currentPlayer++;
+        boardLogic.checkGameFinish();
     }
     else {
-        if (boardLogic.openTaki || boardLogic.currentCard.number === 13) {
+        if (boardLogic.openTaki || boardLogic.currentCard.number === 13 || boardLogic.currentCard.number === 12) {
             // do not change player
         }
         else {
@@ -207,6 +203,7 @@ boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
                 boardLogic.currentPlayer++;
             }
         }
+        boardLogic.checkGameFinish();
     }
 
     boardLogic.currentPlayer = boardLogic.currentPlayer % boardLogic.numberOfPlayers;
@@ -215,19 +212,33 @@ boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
     if (utility.debug) {
         console.log("current Player turn Id is: " + boardLogic.currentPlayer + "  turn Number: " + boardLogic.totalNumberOfPlay);
     }
-    if (boardLogic.currentCard.number != 12) {
-        // only if not wating to change color   
-        setTimeout(boardLogic.makeAiMove, aiPlayer.moveDelay);
-    }
 
-    if (aiPlayer.Hand.length === 0 || playerLogic.Hand.length === 0) {
-        boardLogic.isGameFinish = true;
-        utility.finishGame();
-        if (utility.debug) {
-            var winner = (aiPlayer.Hand.length === 0)? "computer" : "Human";
-            console.log("game finish, and " + winner + " won!!");
+    setTimeout(boardLogic.makeAiMove, aiPlayer.moveDelay);
+
+}
+
+boardLogic.checkGameFinish = function () {
+    if (boardLogic.currentCard.number != 13) {
+        if (aiPlayer.Hand.length === 0 || playerLogic.Hand.length === 0) {
+            boardLogic.isGameFinish = true;
+            utility.finishGame();
+            if (utility.debug) {
+                var winner = (aiPlayer.Hand.length === 0) ? "computer" : "Human";
+                console.log("game finish, and " + winner + " won!!");
+            }
         }
     }
+}
+
+boardLogic.setChangeColor = function (iColor, iPlayerId) {
+    if (boardLogic.checkPlayersTurn(iPlayerId)){
+        if (iColor < 4 && iColor > -1) {
+            boardLogic.changColorSelection = iColor;
+            boardLogic.setPlayerTurn(true);
+            return true;
+        }
+    }
+    return false;
 }
 
 boardLogic.makeAiMove = function () {
@@ -257,103 +268,53 @@ boardLogic.checkPlayersTurn = function (iPlayerId) {
     }
 
     if (boardLogic.currentPlayer != iPlayerId && iPlayerId != aiPlayer.playerId) {
-        // playr try to play, in case AI miss a turn
+        // player try to play, in case AI miss a turn
         boardLogic.makeAiMove();
     }
     return boardLogic.currentPlayer === iPlayerId
 }
 
-boardLogic.isCardInTheSameColorExsist = function (iCards, iColor) {
-    iCards.forEach(function(card){
-        if(card.color === iColor){
-            return true;
+boardLogic.validateNoOtherOptionsToPlay = function(iCards){
+    if (boardLogic.isCardInTheSameColorExsist(iCards, boardLogic.currentCard.color) ||
+        boardLogic.isCardInTheSameNumberExsist(iCards, boardLogic.currentCard.number) ||
+        boardLogic.isColorLessOptionCardAvilable(iCards)) {
+        return false;
+    }
+
+    return true;
+}
+
+boardLogic.isColorLessOptionCardAvilable = function (iCards) {
+    var retVal = false;
+    iCards.forEach(function (card) {
+        if (card.color === 4) {
+            retVal = true;
         }
     });
-    return false;
+    return retVal;
+}
+
+boardLogic.isCardInTheSameColorExsist = function (iCards, iColor) {
+    var retVal = false;
+    iCards.forEach(function(card){
+        if(card.color === iColor){
+            retVal = true;
+        }
+    });
+    return retVal;
 }
 
 boardLogic.isCardInTheSameNumberExsist = function (iCards, iNumber) {
+    var retVal = false;
     iCards.forEach(function (card) {
-        if (card.number === iColor) {
-            return true;
+        if (card.number === iNumber) {
+            retVal = true;
         }
     });
-    return false;
+    return retVal;
 }
 
-// UI manipulation section
-/*
-boardLogic.loadUI = function () {
-    lobby.removeFromView();
-    boardLogic.divInDOM = document.querySelector(".board");
-    boardLogic.divInDOM.style.display = utility.displayActive;
-
-    boardLogic.init();
-    playerLogic.init();
-    aiPlayer.init();
-
-    
-    utility.displayStats();
-
-    var endTakiBtn = document.querySelector(".end-taki-button");
-    endTakiBtn.onclick = boardLogic.closeTaki;
-
-    var colrBtns = document.querySelectorAll(".color-button");
-    if (colrBtns && colrBtns.length > 0) {
-        for (var i = 0; i < colrBtns.length; i++) {
-            colrBtns[i].onclick = boardLogic.onSelectedColorclick;
-        }
-    }
+boardLogic.playerEndedGame = function () {
+    boardLogic.isGameFinish = true;
+    utility.finishGame("Hope you will finish the game next time");
 }
-
-boardLogic.removeFromView = function () {
-    boardLogic.divInDOM.style.display = utility.displayHidden;
-}
-
-boardLogic.openUISelection = function () {
-    if (aiPlayer && aiPlayer.playerId === boardLogic.currentPlayer) {
-    // AI no need to show the UI extentions
-        return;
-    }
-    if (boardLogic.currentCard.number === 12) {
-        // CC
-        var colorSelection = document.querySelector(".color-selection");
-        colorSelection.style.display = utility.displayActive;
-    }
-    else if (boardLogic.currentCard.number === 10) {
-        // TAKI
-        var closeTaki = document.querySelector(".close-taki");
-        closeTaki.style.display = utility.displayActive;
-    }
-}
-
-boardLogic.removechangeColor = function () {
-    var colorSelection = document.getElementById("currentCard");
-    colorSelection.style.color = null;
-}
-
-boardLogic.onSelectedColorclick = function (iElement) {
-    var color = iElement.currentTarget.classList[1];
-    var colorNumber = 4;
-    for (var i = 0; i < Object.keys(boardLogic.cardColors).length; i++) {
-        if (boardLogic.cardColors[i].toUpperCase() == color.toUpperCase()){
-            colorNumber = i;
-        }
-    }
-
-    boardLogic.setSelectedChangeColor(colorNumber);
-    boardLogic.makeAiMove();
-}
-
-boardLogic.setSelectedChangeColor = function (iColorNumber) {
-    if (iColorNumber < 4 && iColorNumber > -1) {
-        boardLogic.changColorSelection = iColorNumber;
-    }
-
-    var colorSelection = document.querySelector(".color-selection");
-    colorSelection.style.display = utility.displayHidden;
-
-    var colorSelection = document.getElementById("currentCard");
-    colorSelection.style.color = boardLogic.cardColors[iColorNumber];
-}
-*/

@@ -26,16 +26,15 @@
         </div>
 
         <div class="board">
-            <!--<div><button type="button" id="drowCard">Get Card</button> </div>-->
             <div id="botCards" class="section bot-cards"></div>
             <div class="section central-ui">
                 <div class="statistics">
                     <p>Total game time is: <span id="time">00:00</span></p>
                     <p>Total noumber of turns: <span id="numberOfTurns">0</span></p>
                     <p>Avrage time per-turn: <span id="timePerTrun"> 00:00</span> </p>
-                    <p>Currently Playing: <span id="playerNume"></span></p>
-                    <div class="finish-game" style="display:none">
-                        <button type="button" class="in-game-btn finis-game-btn">Finish Game</button>
+                    <p>Currently Playing: <span id="playerName" class="playing-player"></span></p>
+                    <div class="finish-game">
+                        <button type="button" class="in-game-btn end-game-btn">End Game</button>
                     </div>
                 </div>
                 <div class="central-board">
@@ -59,6 +58,15 @@
             <div id="playersCards" class="section player-cards"></div>
         </div>
     </main>
+
+    <div class="popup">
+        <div class="popup-content">
+            <span class="close-button">&times;</span>
+            <div class="popup-text">
+            </div>
+        </div>
+    </div>
+
 
 
     <footer id="footerDiv"></footer>

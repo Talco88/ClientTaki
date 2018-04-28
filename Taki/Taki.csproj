@@ -69,6 +69,8 @@
     <Content Include="CSS\Board.css" />
     <Content Include="CSS\BoardLayout.css" />
     <Content Include="CSS\GeneralStyle.css" />
+    <Content Include="Imgs\changeColor.JPG" />
+    <Content Include="Imgs\SuperTaki.JPG" />
     <Content Include="Imgs\taki-card-back.JPG" />
     <Content Include="JS\AiPlayer.js" />
     <Content Include="JS\BoardUI.js" />

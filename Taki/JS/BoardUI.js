@@ -10,11 +10,16 @@ boardUI.loadUI = function () {
     playerLogic.init();
     aiPlayer.init();
 
-
-    utility.displayStats();
+    utility.createStatisticInterval();
 
     var endTakiBtn = document.querySelector(".end-taki-button");
     endTakiBtn.onclick = boardLogic.closeTaki;
+
+    var popUpCloseButton = document.querySelector(".close-button");
+    popUpCloseButton.onclick = utility.removePopUp;
+
+    var endGameBtm = document.querySelector(".end-game-btn");
+    endGameBtm.onclick = playerLogic.onclickEndGame;
 
     var colrBtns = document.querySelectorAll(".color-button");
     if (colrBtns && colrBtns.length > 0) {
@@ -59,20 +64,19 @@ boardUI.onSelectedColorclick = function (iElement) {
         }
     }
 
-    boardUI.setSelectedChangeColor(colorNumber);
+    boardUI.setSelectedChangeColor(colorNumber, playerLogic.playerId);
     boardLogic.makeAiMove();
 }
 
-boardUI.setSelectedChangeColor = function (iColorNumber) {
-    if (iColorNumber < 4 && iColorNumber > -1) {
-        boardLogic.changColorSelection = iColorNumber;
+boardUI.setSelectedChangeColor = function (iColorNumber, iPlayerId) {
+    if (boardLogic.setChangeColor(iColorNumber, iPlayerId)) {
+
+        var colorSelection = document.querySelector(".color-selection");
+        colorSelection.style.display = utility.displayHidden;
+
+        var colorSelection = document.getElementById("currentCard");
+        colorSelection.style.color = boardLogic.cardColors[iColorNumber];
     }
-
-    var colorSelection = document.querySelector(".color-selection");
-    colorSelection.style.display = utility.displayHidden;
-
-    var colorSelection = document.getElementById("currentCard");
-    colorSelection.style.color = boardLogic.cardColors[iColorNumber];
 }
 
 boardUI.printPlayerCadsToUser = function (iCards) {
@@ -85,6 +89,17 @@ boardUI.printPlayerCadsToUser = function (iCards) {
     utility.manageCardsmargin(".player-cards .taki-card");
 }
 
+boardUI.printCurrentCard = function (iCard) {
+    var currentCard = document.getElementById("currentCard");
+    currentCard.innerHTML = "";
+    currentCard.appendChild(utility.getCardHtml(iCard));
+}
+
 boardUI.initDecUIData = function (iFunc) {
     document.getElementById("deckCards").onclick = iFunc;
+}
+
+boardUI.closeTaki = function () {
+    var closeTaki = document.querySelector(".close-taki");
+    closeTaki.style.display = utility.displayHidden;
 }

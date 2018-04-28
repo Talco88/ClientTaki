@@ -2,49 +2,64 @@
 playerLogic.playerId = 0;
 
 playerLogic.init = function () {
+    playerLogic.isAborted = false;
     playerLogic.Hand = boardLogic.getFirsdHandOfCards();
     boardUI.printPlayerCadsToUser(playerLogic.Hand);
     boardUI.initDecUIData(playerLogic.drowCardsFromDeck);
 }
 
 // the function get a card and try to make a move, if the move is llegal the remove the card, else return string with error
-playerLogic.playSelectedCard = function (iCardIndex, iCard) {
+playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
 
     if (boardLogic.getCardFromPlayer(iCard, playerLogic.playerId))
     {
         // move was verify.
         // remove icard from hand.
-        var index = -1;
-        for (var i = 0; i < playerLogic.Hand.length; i++) {
-            if (playerLogic.Hand[i].color === iCard.color && playerLogic.Hand[i].number === iCard.number) {
-                index = i;
-                break;
-            }
-        }
+        //var index = -1;
+        //for (var i = 0; i < playerLogic.Hand.length; i++) {
+        //    if (playerLogic.Hand[i].color === iCard.color && playerLogic.Hand[i].number === iCard.number && ) {
+        //        index = i;
+        //        break;
+        //    }
+        //}
 
-        if (index > -1) {
-            playerLogic.Hand.splice(index, 1);
+        if (iCardIndex > -1) {
+            playerLogic.Hand.splice(iCardIndex, 1);
             boardUI.printPlayerCadsToUser(playerLogic.Hand);
+            boardLogic.checkGameFinish();
         }
         return "";
     }
     else {
+        utility.displayPopUp("Move is illegal... \nLet's try another card");
         return "Move is Illegal";
     }
 }
 
 playerLogic.drowCardsFromDeck = function () {
-    /// add validation that the player have no other option
-    var cards = boardLogic.drowCardsFromDeck(playerLogic.playerId);
-    if (cards && cards.length > 0) {
-        playerLogic.Hand = playerLogic.Hand.concat(cards);
-        boardUI.printPlayerCadsToUser(playerLogic.Hand);
-    }
-    else {
-        if (utility.debug) {
-            console.log("try to pull card not in turn");
+    if (boardLogic.validateNoOtherOptionsToPlay(playerLogic.Hand)) {
+        var cards = boardLogic.drowCardsFromDeck(playerLogic.playerId);
+        if (cards && cards.length > 0) {
+            playerLogic.Hand = playerLogic.Hand.concat(cards);
+            boardUI.printPlayerCadsToUser(playerLogic.Hand);
+        }
+        else {
+            if (utility.debug) {
+                console.log("try to pull card not in turn");
+            }
         }
     }
+    else {
+        utility.displayPopUp("Hold on, let's not get too rush...\nLooks like you have other option to play");
+        if (utility.debug) {
+            console.log("try to pull whie there are other options to play");
+        }
+    }
+}
+
+playerLogic.onclickEndGame = function () {
+    playerLogic.isAborted = true;
+    boardLogic.playerEndedGame();
 }
 
 playerLogic.onclickedCard = function (iElement) {
@@ -64,7 +79,7 @@ playerLogic.onclickedCard = function (iElement) {
     })
 
     if (index >= 0) {
-        var responce = playerLogic.playSelectedCard(index, selectedCard);
+        var responce = playerLogic.playSelectedCard(index, cardId, selectedCard);
         if (responce != "") {
             if (utility.debug) {
                 console.log(responce);
@@ -72,7 +87,7 @@ playerLogic.onclickedCard = function (iElement) {
         }
     }
     else {
-        alert("unable to find the card");
+        utility.displayPopUp("Ouppsy, unable to find the card");
     }
 
     if (utility.debug) {

@@ -1,6 +1,6 @@
 ﻿var aiPlayer = {}
 aiPlayer.playerId = 1;
-aiPlayer.moveDelay = 1000;
+aiPlayer.moveDelay = 500;
 
 aiPlayer.init = function () {
     aiPlayer.Hand = boardLogic.getFirsdHandOfCards();
@@ -89,7 +89,7 @@ aiPlayer.makeMove = function () {
                 aiPlayer.Hand.splice(changecolorIndex, 1);
             }
             var selectedColor = aiPlayer.getColorWithMaxCards();
-            boardUI.setSelectedChangeColor(selectedColor);
+            boardUI.setSelectedChangeColor(selectedColor, aiPlayer.playerId);
 
             selectCard = "change color with color: " + boardLogic.cardColors[selectedColor];
         }
@@ -104,8 +104,11 @@ aiPlayer.makeMove = function () {
             console.log(selectCard);
         }
 
-
         aiPlayer.printAiCards();
+    }
+
+    if (aiPlayer.Hand.length === 0) {
+        boardLogic.checkGameFinish();
     }
 }
 

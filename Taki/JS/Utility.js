@@ -2,7 +2,7 @@
 
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
-utility.debug = false;
+utility.debug = true;
 utility.statisticInterval = 0;
 
 
@@ -27,8 +27,14 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 
 
     var innerDiv = document.createElement('div');
-    innerDiv.className = 'card-option';
-    innerDiv.innerText = option;
+    
+    if (iCard.color === 4) {
+        innerDiv.className = "card-option " + option + "-inner";
+    }
+    else {
+        innerDiv.className = "card-option";
+        innerDiv.innerText = option;
+    }
 
     cardDiv.appendChild(innerDiv);
 
@@ -90,40 +96,43 @@ utility.calculateMargininCards = function (numberOfCards, cardWidth) {
     return calculatedMargin;
 }
 
-utility.displayStats =  function (display) {
+utility.createStatisticInterval = function () {
     utility.timer = 0;
-    utility.statisticInterval = setInterval(function () {
-        utility.timer++;
+    utility.statisticInterval = setInterval(utility.displayStats, 1000);
+}
 
-        var display = document.querySelector('#time');
-        display.textContent = utility.parsTimeToMinAndSec(utility.timer);
+utility.displayStats =  function () {
+    utility.timer++;
+
+    var display = document.querySelector('#time');
+    display.textContent = utility.parsTimeToMinAndSec(utility.timer);
         
-        var displayNumberOfTurns = document.querySelector('#numberOfTurns');
-        displayNumberOfTurns.textContent = boardLogic.totalNumberOfPlay;
+    var displayNumberOfTurns = document.querySelector('#numberOfTurns');
+    displayNumberOfTurns.textContent = boardLogic.totalNumberOfPlay;
 
-        var avrageTime;
-        if (boardLogic.totalNumberOfPlay === 0) {
-            avrageTime = utility.timer;
-        }
-        else {
-            avrageTime = utility.timer / boardLogic.totalNumberOfPlay
-        }
-        var displayPerTurn = document.querySelector('#timePerTrun');
-        displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTime));
+    var avrageTime;
+    if (boardLogic.totalNumberOfPlay === 0) {
+        avrageTime = utility.timer;
+    }
+    else {
+        avrageTime = utility.timer / boardLogic.totalNumberOfPlay
+    }
+    var displayPerTurn = document.querySelector('#timePerTrun');
+    displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTime));
 
 
-        var displayActivePlayer = document.querySelector('#playerNume');
-        var currentPlayer;
+    var displayActivePlayer = document.querySelector('#playerName');
+    displayActivePlayer.textContent = utility.displayPlayer();
 
-        if (boardLogic.isGameFinish) {
-            currentPlayer = "Game Finished";
-        }
-        else {
-            currentPlayer = (boardLogic.currentPlayer && boardLogic.currentPlayer === aiPlayer.playerId) ? "AI" : "You";
-        }
-        displayActivePlayer.textContent = currentPlayer;
+}
 
-    }, 1000);
+utility.displayPlayer = function () {
+    if (boardLogic.isGameFinish) {
+        return "Game Finished";
+    }
+    else {
+        return (boardLogic.currentPlayer && boardLogic.currentPlayer === aiPlayer.playerId) ? "AI" : "You";
+    }
 }
 
 utility.parsTimeToMinAndSec = function (iTime) {
@@ -136,11 +145,52 @@ utility.parsTimeToMinAndSec = function (iTime) {
     return minutes + ":" + seconds;
 }
 
-utility.finishGame = function () {
+
+
+utility.finishGame = function (iFinishText) {
     if (boardLogic.isGameFinish) {
         clearInterval(utility.statisticInterval);
-        var finishGameBtb = document.querySelector('.finish-game');
-        finishGameBtb.style.display = utility.displayActive;
+        utility.displayStats();
+        var text = "";
+        var winner = "";
+        if (playerLogic.isAborted || playerLogic.Hand.length > 0) {
+            winner = "AI";
+        }
+        else {
+            winner = "You";
+        };
 
+        var text = "Game Finish " + winner + " Won!";
+
+        if (iFinishText) {
+            text += "\n" + iFinishText;
+        }
+        else {
+            text += "\nPlay again!"
+        }
+
+        utility.displayPopUp(text);
+    }
+}
+
+utility.displayPopUp = function (iData) {
+    var modal = document.querySelector(".popup");
+    modal.classList.add("show-popup");
+
+    var popupText = document.querySelector(".popup-text");
+    popupText.innerText = "";
+
+    var text = document.createElement('H1');
+    text.innerText = iData;
+
+    popupText.appendChild(text);
+}
+
+utility.removePopUp = function () {
+    var modal = document.querySelector(".popup");
+    modal.classList.remove("show-popup");
+
+    if (boardLogic.isGameFinish) {
+        lobby.load();
     }
 }

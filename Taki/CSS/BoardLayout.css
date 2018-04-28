@@ -26,28 +26,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /*border: 1px solid;*/
 }
 
 .board{
     display: none;
     justify-content: center;
     align-items: center;
-    /*border: 2px solid;*/
     height: 97vh;
     flex-direction: column;
 }
 
 .board .section {
     width: 100%;
-    /*border: 1px solid;*/
 }
 
 .in-game-btn{
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
     font-size: 40px;
-    border-radius: 60px;
+    border-radius: 50px;
+}
+
+.playing-player{
+    font-size: 30px;
 }
 
 .end-taki-button{
