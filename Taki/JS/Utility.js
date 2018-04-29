@@ -132,7 +132,17 @@ utility.displayStats =  function () {
     }
     var displayPerTurn = document.querySelector('#timePerTrun');
     displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTime));
-
+    
+    
+    var avrageTimeCross;
+    if (boardLogic.totalNumberOfRounds === 0) {
+        avrageTimeCross = utility.statisticTotalGameTime;
+    }
+    else {
+        avrageTimeCross = utility.statisticTotalGameTime / boardLogic.totalNumberOfRounds
+    }
+    var displayPerTurn = document.querySelector('#timePerTrunCross');
+    displayPerTurn.textContent = utility.parsTimeToMinAndSec((avrageTimeCross));
 
     var displayActivePlayer = document.querySelector('#playerName');
     displayActivePlayer.textContent = utility.displayPlayer();
@@ -182,6 +192,12 @@ utility.finishGame = function (iFinishText) {
         }
 
         utility.displayPopUp(text);
+
+        var sumInLobby = document.querySelector('.sum-statistics');
+        sumInLobby.innerHTML = document.querySelector('.statistic-data').innerHTML;
+
+        var curPlayer = document.querySelector('.sum-statistics .current-player');
+        curPlayer.style.display = utility.displayHidden;
     }
 }
 

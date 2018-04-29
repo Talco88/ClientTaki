@@ -13,8 +13,8 @@ boardLogic.debugdeckOfCards = false;
 
 ////****
 ///  Oppen Issues:
-///      Display statistic finilize in the lobby
-///      Add: the avrage time to all the games
+///      block all option on change color
+///      block get cards from deck on taki open
 ///******
 
 
@@ -26,6 +26,7 @@ boardLogic.init = function () {
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.openTaki = false;
+    boardLogic.isWatingForCahngeColor = false;
     boardLogic.currentPlayer = playerLogic.playerId;
     boardUI.closeTaki();
     boardLogic.isGameFinish = false;
@@ -112,7 +113,7 @@ boardLogic.getFirsdHandOfCards = function () {
 }
 
 boardLogic.drowCardsFromDeck = function (iPlayerId) {
-    if (boardLogic.checkPlayersTurn(iPlayerId)) {
+    if (boardLogic.checkPlayersTurn(iPlayerId) && !boardLogic.openTaki && !boardLogic.isWatingForCahngeColor) {
         var retCards = [];
         var numberOfCardsToDrow = 1;
         if (boardLogic.punishNumber > 0) {
@@ -198,6 +199,10 @@ boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
     else {
         if (boardLogic.openTaki || boardLogic.currentCard.number === 13 || boardLogic.currentCard.number === 12) {
             // do not change player
+            if (boardLogic.currentCard.number === 12) {
+                // change color, prevent all other events.
+                boardLogic.isWatingForCahngeColor = true;
+            }
         }
         else {
             boardLogic.currentPlayer++;
@@ -239,6 +244,7 @@ boardLogic.setChangeColor = function (iColor, iPlayerId) {
         if (iColor < 4 && iColor > -1) {
             boardLogic.changColorSelection = iColor;
             boardLogic.setPlayerTurn(true);
+            boardLogic.isWatingForCahngeColor = false;
             return true;
         }
     }
@@ -276,6 +282,24 @@ boardLogic.checkPlayersTurn = function (iPlayerId) {
         boardLogic.makeAiMove();
     }
     return boardLogic.currentPlayer === iPlayerId
+}
+
+boardLogic.validateUserInteraction = function (iPlayerId, iIsPlayMove) {
+    var stringMessage = "";
+
+    if (boardLogic.openTaki && !iIsPlayMove) {
+        stringMessage = "wait, don't take cards\nwhile there is an open taki....";
+    }
+
+    if (boardLogic.isWatingForCahngeColor) {
+        stringMessage = "wait!\nNeed to select color first";
+    }
+
+    if (!boardLogic.checkPlayersTurn(iPlayerId)) {
+        stringMessage = "Hold on, \nPlease wait for your turn";
+    }
+
+    return stringMessage;
 }
 
 boardLogic.validateNoOtherOptionsToPlay = function(iCards){

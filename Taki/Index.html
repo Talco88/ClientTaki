@@ -22,6 +22,7 @@
 
     <main>    
         <div id="lobby" class="lobby" style="display:none">
+            <div class="sum-statistics"></div>
             <button type="button" id="startGameBtn">Start Game</button>
         </div>
 
@@ -29,11 +30,14 @@
             <div id="botCards" class="section bot-cards"></div>
             <div class="section central-ui">
                 <div class="statistics">
-                    <p>Total game time is: <span id="time">00:00</span></p>
-                    <p>Total noumber of turns: <span id="numberOfTurns">0</span></p>
-                    <p>Avrage time per-turn: <span id="timePerTrun"> 00:00</span> </p>
-                    <p>Number of time any player got one card: <span id="oneCard">0</span></p>
-                    <p>Currently Playing: <span id="playerName" class="playing-player"></span></p>
+                    <div class="statistic-data">
+                        <p>Total game time is: <span id="time">00:00</span></p>
+                        <p>Total noumber of turns: <span id="numberOfTurns">0</span></p>
+                        <p>Avrage time per-turn: <span id="timePerTrun"> 00:00</span> </p>
+                        <p>Avrage time per-turn cros-games: <span id="timePerTrunCross"> 00:00</span> </p>
+                        <p>Number of time any player got one card: <span id="oneCard">0</span></p>
+                        <p class="current-player">Currently Playing: <span id="playerName" class="playing-player"></span></p>
+                    </div>
                     <div class="finish-game">
                         <button type="button" class="in-game-btn end-game-btn">End Game</button>
                     </div>

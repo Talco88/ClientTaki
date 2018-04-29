@@ -3,6 +3,11 @@
     background: radial-gradient(#80bfff, #1a8cff ); 
 }
 
+p {
+    margin: 2px;
+
+}
+
 .lobby button{
     color: white;
     background-color: #0066cc;
@@ -12,6 +17,7 @@
 }
 
 .lobby{
+    flex-flow: column;
     justify-content: center;
     align-items: center;
     height: 98vh;

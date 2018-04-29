@@ -19,4 +19,6 @@ lobby.load = function () {
 
 lobby.removeFromView = function () {
     lobby.divInDOM.style.display = utility.displayHidden;
+    var sumInLobby = document.querySelector('.sum-statistics');
+    sumInLobby.innerText = "";
 }

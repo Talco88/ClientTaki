@@ -3,6 +3,7 @@ aiPlayer.playerId = 1;
 aiPlayer.moveDelay = 500;
 
 aiPlayer.init = function () {
+    aiPlayer.isCurrentlyMakingMove = false;
     aiPlayer.Hand = boardLogic.getFirsdHandOfCards();
     aiPlayer.printAiCards();
 }
@@ -19,7 +20,8 @@ aiPlayer.makeMove = function () {
     var changeColor = null;
 
     // validate that that the turn is the ai after the delay.
-    if (boardLogic.currentPlayer === aiPlayer.playerId) {
+    if (boardLogic.currentPlayer === aiPlayer.playerId && !aiPlayer.isCurrentlyMakingMove) {
+        aiPlayer.isCurrentlyMakingMove = true; // locking in case of double calls
         if (boardLogic.openTaki &&
             (boardLogic.isCardInTheSameNumberExsist(aiPlayer.Hand, 11) ||
              boardLogic.isCardInTheSameNumberExsist(aiPlayer.Hand, 13))) {
@@ -175,6 +177,7 @@ aiPlayer.makeMove = function () {
         }
 
         aiPlayer.printAiCards();
+        aiPlayer.isCurrentlyMakingMove = false;
     }
 
     if (aiPlayer.Hand.length === 0) {

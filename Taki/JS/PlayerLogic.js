@@ -13,16 +13,6 @@ playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
 
     if (boardLogic.getCardFromPlayer(iCard, playerLogic.playerId))
     {
-        // move was verify.
-        // remove icard from hand.
-        //var index = -1;
-        //for (var i = 0; i < playerLogic.Hand.length; i++) {
-        //    if (playerLogic.Hand[i].color === iCard.color && playerLogic.Hand[i].number === iCard.number && ) {
-        //        index = i;
-        //        break;
-        //    }
-        //}
-
         if (iCardIndex > -1) {
             playerLogic.Hand.splice(iCardIndex, 1);
             boardUI.printPlayerCadsToUser(playerLogic.Hand);
@@ -41,7 +31,11 @@ playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
 }
 
 playerLogic.drowCardsFromDeck = function () {
-    if (boardLogic.validateNoOtherOptionsToPlay(playerLogic.Hand)) {
+    var logicMessage = boardLogic.validateUserInteraction(playerLogic.playerId);
+    if (logicMessage != "") {
+        utility.displayPopUp(logicMessage);
+    }
+    else if (boardLogic.validateNoOtherOptionsToPlay(playerLogic.Hand)) {
         var cards = boardLogic.drowCardsFromDeck(playerLogic.playerId);
         if (cards && cards.length > 0) {
             playerLogic.Hand = playerLogic.Hand.concat(cards);
@@ -54,7 +48,7 @@ playerLogic.drowCardsFromDeck = function () {
         }
     }
     else {
-        utility.displayPopUp("Hold on, let's not get too rush...\nLooks like you have other option to play");
+        utility.displayPopUp("Hold on, let's not get too rush...\nLooks like you have some option to play");
         if (utility.debug) {
             console.log("try to pull whie there are other options to play");
         }
@@ -74,27 +68,33 @@ playerLogic.onclickedCard = function (iElement) {
     var index = -1;
     var i = 0;
     
-    playerLogic.Hand.forEach(function (card) {
-        if (card.id == cardId) {
-            selectedCard = card;
-            index = i;
-        }
-        i++;
-    })
-
-    if (index >= 0) {
-        var responce = playerLogic.playSelectedCard(index, cardId, selectedCard);
-        if (responce != "") {
-            if (utility.debug) {
-                console.log(responce);
-            }
-        }
+    var logicMessage = boardLogic.validateUserInteraction(playerLogic.playerId, true);
+    if (logicMessage != "") {
+        utility.displayPopUp(logicMessage);
     }
     else {
-        utility.displayPopUp("Ouppsy, unable to find the card");
-    }
+        playerLogic.Hand.forEach(function (card) {
+            if (card.id == cardId) {
+                selectedCard = card;
+                index = i;
+            }
+            i++;
+        })
 
-    if (utility.debug) {
-        console.log("card Selected, id: " + cardId + "  located at: " + index);
+        if (index >= 0) {
+            var responce = playerLogic.playSelectedCard(index, cardId, selectedCard);
+            if (responce != "") {
+                if (utility.debug) {
+                    console.log(responce);
+                }
+            }
+        }
+        else {
+            utility.displayPopUp("Ouppsy, unable to find the card");
+        }
+
+        if (utility.debug) {
+            console.log("card Selected, id: " + cardId + "  located at: " + index);
+        }
     }
 }
