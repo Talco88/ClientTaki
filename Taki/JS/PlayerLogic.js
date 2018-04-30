@@ -4,7 +4,7 @@ playerLogic.playerId = 0;
 playerLogic.init = function () {
     playerLogic.isAborted = false;
     playerLogic.Hand = boardLogic.getFirsdHandOfCards();
-    boardUI.printPlayerCadsToUser(playerLogic.Hand);
+    boardUI.printPlayerCardsToUser(playerLogic.Hand);
     boardUI.initDecUIData(playerLogic.drowCardsFromDeck);
 }
 
@@ -15,7 +15,7 @@ playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
     {
         if (iCardIndex > -1) {
             playerLogic.Hand.splice(iCardIndex, 1);
-            boardUI.printPlayerCadsToUser(playerLogic.Hand);
+            boardUI.printPlayerCardsToUser(playerLogic.Hand);
 
             if (playerLogic.Hand.length === 1) {
                 boardLogic.updateOneCard();
@@ -39,7 +39,7 @@ playerLogic.drowCardsFromDeck = function () {
         var cards = boardLogic.drowCardsFromDeck(playerLogic.playerId);
         if (cards && cards.length > 0) {
             playerLogic.Hand = playerLogic.Hand.concat(cards);
-            boardUI.printPlayerCadsToUser(playerLogic.Hand);
+            boardUI.printPlayerCardsToUser(playerLogic.Hand);
         }
         else {
             if (utility.debug) {
@@ -48,7 +48,7 @@ playerLogic.drowCardsFromDeck = function () {
         }
     }
     else {
-        utility.displayPopUp("Hold on, let's not get too rush...\nLooks like you have some option to play");
+        utility.displayPopUp("Let's not get too rush...\nLooks like you have some option to play");
         if (utility.debug) {
             console.log("try to pull whie there are other options to play");
         }

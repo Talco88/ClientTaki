@@ -1,7 +1,7 @@
 ﻿var boardUI = {};
 boardUI.uiUpdateInterval = 0;
 
-// UI manipulation section
+
 boardUI.loadUI = function () {
     lobby.removeFromView();
     boardUI.divInDOM = document.querySelector(".board");
@@ -29,7 +29,11 @@ boardUI.loadUI = function () {
         }
     }
 
-    boardUI.uiUpdateInterval = setInterval(utility.updateBoardLayout, 2500);
+    // no views open from last game.
+    boardUI.closeTaki();
+    boardUI.removeColorSelectionFromView();
+
+    //boardUI.uiUpdateInterval = setInterval(utility.updateBoardLayout, 2500);
 }
 
 boardUI.removeFromView = function () {
@@ -73,23 +77,22 @@ boardUI.onSelectedColorclick = function (iElement) {
 
 boardUI.setSelectedChangeColor = function (iColorNumber, iPlayerId) {
     if (boardLogic.setChangeColor(iColorNumber, iPlayerId)) {
-
-        var colorSelection = document.querySelector(".color-selection");
-        colorSelection.style.display = utility.displayHidden;
-
         var colorSelection = document.getElementById("currentCard");
         colorSelection.style.color = boardLogic.cardColors[iColorNumber];
+
+        boardUI.removeColorSelectionFromView();
     }
 }
 
-boardUI.printPlayerCadsToUser = function (iCards) {
+boardUI.printPlayerCardsToUser = function (iCards) {
     var playersCards = document.getElementById("playersCards");
     playersCards.innerHTML = "";
     for (var i = 0; i < iCards.length; i++) {
         var card = iCards[i];
         playersCards.appendChild(utility.getCardHtml(card, playerLogic.onclickedCard));
     }
-    utility.manageCardsmargin(".player-cards .taki-card");
+
+    utility.updateBoardLayout();
 }
 
 boardUI.printCurrentCard = function (iCard) {
@@ -105,4 +108,9 @@ boardUI.initDecUIData = function (iFunc) {
 boardUI.closeTaki = function () {
     var closeTaki = document.querySelector(".close-taki");
     closeTaki.style.display = utility.displayHidden;
+}
+
+boardUI.removeColorSelectionFromView = function () {
+    var colorSelection = document.querySelector(".color-selection");
+    colorSelection.style.display = utility.displayHidden;
 }

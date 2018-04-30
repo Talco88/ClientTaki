@@ -125,7 +125,7 @@ aiPlayer.makeMove = function () {
                         }
                         else if (card.number === 10 || card.number === 13) {
                             if (boardLogic.isCardInTheSameColorExsist(aiPlayer.Hand, card.color)) {
-                                // + or taki are bette option...
+                                // + or taki are better option...
                                 selectCard = card;
                                 index = i;
                             }
@@ -235,5 +235,6 @@ aiPlayer.printAiCards = function () {
         var card = aiPlayer.Hand[i];
         aisCards.appendChild(utility.flipedCard());
     }
-    utility.manageCardsmargin(".bot-card-display");
+
+    utility.updateBoardLayout();
 }

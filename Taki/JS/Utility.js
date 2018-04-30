@@ -2,7 +2,7 @@
 
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
-utility.debug = true;
+utility.debug = false;
 utility.statisticInterval = 0;
 utility.statisticTotalGameTime = 0;
 
@@ -168,7 +168,6 @@ utility.parsTimeToMinAndSec = function (iTime) {
     return minutes + ":" + seconds;
 }
 
-
 utility.finishGame = function (iFinishText) {
     if (boardLogic.isGameFinish) {
         clearInterval(utility.statisticInterval);
@@ -182,7 +181,7 @@ utility.finishGame = function (iFinishText) {
             winner = "You";
         };
 
-        var text = "Game Finish " + winner + " Won!";
+        var text = "Game Finish, " + winner + " Won!";
 
         if (iFinishText) {
             text += "\n" + iFinishText;

@@ -8,14 +8,7 @@ boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5"
 boardLogic.numberOfPlayers = 2;
 boardLogic.totalNumberOfRounds = 0;
 boardLogic.totalPlayTime = 0;
-boardLogic.changColorSelection = 4;
 boardLogic.debugdeckOfCards = false;
-
-////****
-///  Oppen Issues:
-///      block all option on change color
-///      block get cards from deck on taki open
-///******
 
 
 boardLogic.init = function () {
@@ -23,6 +16,7 @@ boardLogic.init = function () {
     boardLogic.totalNumberOfPlay = 0;
     boardLogic.totalPlayTime = 0;
     boardLogic.timesPlayerGotOneCard = 0;
+    boardLogic.changColorSelection = 4;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.openTaki = false;
