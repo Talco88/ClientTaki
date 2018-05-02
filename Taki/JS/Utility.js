@@ -2,6 +2,7 @@
 
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
+utility.unifyCardWidth = 110;
 utility.debug = false;
 utility.statisticInterval = 0;
 utility.statisticTotalGameTime = 0;
@@ -28,12 +29,8 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 
 
     var innerDiv = document.createElement('div');
-    
-    if (iCard.color === 4) {
-        innerDiv.className = "card-option " + option + "-inner";
-    }
-    else {
-        innerDiv.className = "card-option";
+    innerDiv.className = "card-option " + option + "-inner";
+    if (iCard.color != 4) {
         innerDiv.innerText = option;
     }
 
@@ -71,8 +68,25 @@ utility.onReSize = function () {
 }
 
 utility.updateBoardLayout = function () {
-    utility.manageCardsmargin(".player-cards .taki-card");
-    utility.manageCardsmargin(".bot-card-display");
+    var cardMargin = 0;
+    cardMargin = utility.manageCardsmargin(".player-cards .taki-card");
+    utility.manageCardsHolderMargin(".player-cards", cardMargin);
+
+    cardMargin = utility.manageCardsmargin(".bot-card-display");
+    utility.manageCardsHolderMargin(".bot-cards", cardMargin);
+
+
+    // manage statistic in small screen
+    var stats = document.querySelector(".statistics");
+    if (stats.clientWidth < 260) {
+        stats.style.fontSize = "12px";
+    }
+    else if (stats.clientWidth > 320) {
+        stats.style.fontSize = "18px";
+    }
+    else {
+        stats.style.fontSize = "15px";
+    }
 }
 
 utility.addEvent = function (object, type, callback) {
@@ -89,12 +103,14 @@ utility.addEvent = function (object, type, callback) {
 utility.manageCardsmargin = function (iSelector) {
     var cards = document.querySelectorAll(iSelector);
     if (cards && cards.length > 0) {
-        var calculatedMargin = utility.calculateMargininCards(cards.length, 140);
+        var calculatedMargin = utility.calculateMargininCards(cards.length, utility.unifyCardWidth);
         for (var i = 0; i < cards.length; i++) {
             cards[i].style.marginRight = calculatedMargin + "px";
-            cards[i].style.width = "140px"; // in some cases the width adjust to teh size before the update, forcing the card sizes
+            cards[i].style.width = utility.unifyCardWidth + "px"; // in some cases the width adjust to teh size before the update, forcing the card sizes
         }
+        return calculatedMargin;
     }
+    return 0;
 }
 
 utility.calculateMargininCards = function (numberOfCards, cardWidth) {
@@ -103,6 +119,17 @@ utility.calculateMargininCards = function (numberOfCards, cardWidth) {
         calculatedMargin = -10;
     }
     return calculatedMargin;
+}
+
+utility.manageCardsHolderMargin = function (iSelector, iCalculatedInnerMargin) {
+    var cardHolder = document.querySelector(iSelector);
+    if (iCalculatedInnerMargin < -11) {
+        iCalculatedInnerMargin *= -1;
+        cardHolder.style.marginRight = (iCalculatedInnerMargin - 10) + "px";
+    }
+    else {
+        cardHolder.style.marginRight = "0px";
+    }
 }
 
 utility.createStatisticInterval = function () {
@@ -194,6 +221,15 @@ utility.finishGame = function (iFinishText) {
 
         var sumInLobby = document.querySelector('.sum-statistics');
         sumInLobby.innerHTML = document.querySelector('.statistic-data').innerHTML;
+
+        var curPlayer = document.querySelector('.last-game-statistic');
+        curPlayer.style.display = utility.displayActive;
+
+        var curPlayer = document.querySelector('.last-game-statistic');
+        curPlayer.style.display = utility.displayActive;
+
+        var curPlayer = document.querySelector('#Lastwinner');
+        curPlayer.innerText = winner;
 
         var curPlayer = document.querySelector('.sum-statistics .current-player');
         curPlayer.style.display = utility.displayHidden;

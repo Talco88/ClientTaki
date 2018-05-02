@@ -5,7 +5,10 @@
 
 p {
     margin: 2px;
+}
 
+.last-game-statistic{
+    flex-direction: column;
 }
 
 .lobby button{
@@ -22,6 +25,10 @@ p {
     justify-content: center;
     align-items: center;
     height: 98vh;
+}
+
+.sum-statistics{
+    font-size: 20px;
 }
 
 .popup {

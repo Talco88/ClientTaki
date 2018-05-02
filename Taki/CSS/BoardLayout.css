@@ -35,7 +35,7 @@
     justify-content: center;
     align-items: center;
     height: 97vh;
-    width: 99%; /*prevent scroll bar flikering*/
+    width: 98%; /*prevent scroll bar flikering*/
     flex-direction: column;
 }
 
@@ -44,9 +44,9 @@
 }
 
 .in-game-btn{
-    width: 130px;
-    height: 130px;
-    font-size: 40px;
+    width: 120px;
+    height: 120px;
+    font-size: 35px;
     border-radius: 50px;
 }
 
@@ -65,8 +65,8 @@
 }
 
 .color-selection .color-button{
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     margin: 2px;
     border-radius: 7px;
 }

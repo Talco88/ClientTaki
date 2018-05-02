@@ -1,6 +1,7 @@
 ﻿var aiPlayer = {}
 aiPlayer.playerId = 1;
 aiPlayer.moveDelay = 500;
+aiPlayer.forceDebug = true;
 
 aiPlayer.init = function () {
     aiPlayer.isCurrentlyMakingMove = false;
@@ -171,7 +172,7 @@ aiPlayer.makeMove = function () {
             }
         }
 
-        if (utility.debug) {
+        if (utility.debug || aiPlayer.forceDebug) {
             console.log("AI play the following: ");
             console.log(selectCard);
         }

@@ -28,7 +28,7 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
-    height: 180px;
+    height: 145px;
     width: 100%;
     margin: 0px;
 }
@@ -45,8 +45,8 @@
     align-items: center;
     background-color: white;
     flex-direction: column;
-    width: 140px;
-    height: 200px;
+    width: 110px;
+    height: 165px;
     border-radius: 10px;
     font-family: "Impact";
     text-shadow: 3px 3px 4px #000000;
@@ -68,7 +68,7 @@
     align-items: center;
     flex: 2;
     font-size: 30px;
-    width: 130px;
+    width: 100px;
 }
 
 .card-upper-option{
@@ -82,8 +82,8 @@
 
 .player-cards .taki-card:hover{ 
     bottom: 10px;
-    width: 155px;
-    height: 215px;
+    width: 120px;
+    height: 180px;
     z-index: 1000;
     background-color: lightblue;
 }
@@ -104,6 +104,10 @@
     color:blue;
 }
 
+.Non{
+
+}
+
 .CC-inner {
     background-image: url('../Imgs/changeColor.JPG');
     background-repeat: no-repeat;
@@ -112,6 +116,10 @@
     width: 100%;
 }
 
-.Non{
+.Stop-inner{
+    font-size: 55px;
+}
 
+.TAKI-inner{
+    font-size: 60px;
 }
