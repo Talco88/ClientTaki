@@ -3,7 +3,7 @@
 utility.displayHidden = 'none';
 utility.displayActive = 'flex';
 utility.unifyCardWidth = 110;
-utility.debug = false;
+utility.debug = true;
 utility.statisticInterval = 0;
 utility.statisticTotalGameTime = 0;
 
@@ -27,9 +27,13 @@ utility.getCardHtml = function (iCard, iClickFunc) {
 
     cardDiv.appendChild(innerUpperDiv);
 
-
+    var specialOption = option;
+    if (iCard.color === 4 && iCard.number === 10) {
+        // supper taki
+        specialOption = "super-taki";
+    }
     var innerDiv = document.createElement('div');
-    innerDiv.className = "card-option " + option + "-inner";
+    innerDiv.className = "card-option " + specialOption + "-inner";
     if (iCard.color != 4) {
         innerDiv.innerText = option;
     }

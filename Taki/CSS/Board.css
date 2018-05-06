@@ -116,6 +116,14 @@
     width: 100%;
 }
 
+.super-taki-inner {
+    background-image: url('../Imgs/SuperTaki.JPG');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50% 50%; 
+    width: 100%;
+}
+
 .Stop-inner{
     font-size: 55px;
 }

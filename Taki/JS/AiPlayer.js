@@ -1,7 +1,7 @@
 ﻿var aiPlayer = {}
 aiPlayer.playerId = 1;
 aiPlayer.moveDelay = 500;
-aiPlayer.forceDebug = true;
+aiPlayer.forceDebug = false;
 
 aiPlayer.init = function () {
     aiPlayer.isCurrentlyMakingMove = false;
@@ -45,7 +45,7 @@ aiPlayer.makeMove = function () {
                     numberOfPlus++;
                 }
 
-                if (specialCard.color === boardLogic.currentCard.color) {
+                if (boardLogic.checkCardTakiColorWithBoard(specialCard)) {
                     if (specialCard.number === 13) {
                         numberOfPlusInTakiColor++;
                         plusIndex = subSelectionIndex;
@@ -103,7 +103,7 @@ aiPlayer.makeMove = function () {
                 }
                 else if (boardLogic.openTaki) {
                     // since taki is open, only same color.
-                    if (boardLogic.currentCard.color === card.color) {
+                    if (boardLogic.checkCardTakiColorWithBoard(card)) {
                         if (selectCard == null) {
                             selectCard = card;
                             index = i;
@@ -117,6 +117,7 @@ aiPlayer.makeMove = function () {
                             changecolorIndex = i;
                         }
                     }
+
                     if (boardLogic.currentCard.number === card.number ||
                         (boardLogic.currentCard.color === card.color && boardLogic.changColorSelection === 4) ||
                         (boardLogic.changColorSelection < 4 && card.color === boardLogic.changColorSelection)) {
@@ -136,6 +137,7 @@ aiPlayer.makeMove = function () {
                 i++;
             });
         }
+
         if (selectCard == null && changeColor == null) {
             if (boardLogic.openTaki) {
                 boardLogic.closeTaki();
@@ -153,8 +155,6 @@ aiPlayer.makeMove = function () {
                 }
                 selectCard = "take card form deck";
             }
-
-
         }
         else if (selectCard == null && changeColor != null) {
             // play the change color

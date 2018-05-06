@@ -2,7 +2,6 @@
 
 boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
-boardLogic.punishNumber = 0;
 boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
 boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "TAKI", 11: "Stop", 12: "CC", 13: "+" });
 boardLogic.numberOfPlayers = 2;
@@ -11,12 +10,18 @@ boardLogic.totalPlayTime = 0;
 boardLogic.debugdeckOfCards = false;
 
 
+///////////////////////////////////////////////////////////////////
+/////  +2 in the middle of the taki, what is the consequence?
+///// supper taki color managment
+///////////////////////////////////////////////////////////////////
+
 boardLogic.init = function () {
     boardLogic.runId = 0;
     boardLogic.totalNumberOfPlay = 0;
     boardLogic.totalPlayTime = 0;
     boardLogic.timesPlayerGotOneCard = 0;
     boardLogic.changColorSelection = 4;
+    boardLogic.punishNumber = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
     boardLogic.openTaki = false;
@@ -25,12 +30,11 @@ boardLogic.init = function () {
     boardUI.closeTaki();
     boardLogic.isGameFinish = false;
     for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
-        if (i != 2) {
-            for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
-                boardLogic.addGeneratedCards(i, j);
-            }
+        for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
+            boardLogic.addGeneratedCards(i, j);
         }
     }
+    boardLogic.CreateSupperTaki();
 
     boardLogic.shuffleDeck(boardLogic.deckOfCards);
     boardLogic.IsInit = true;
@@ -49,6 +53,12 @@ boardLogic.openFirstCard = function () {
 
     boardLogic.currentCard = opendCard;
     boardUI.printCurrentCard(boardLogic.currentCard);
+}
+
+boardLogic.CreateSupperTaki = function () {
+    // supper taki have special number of cards.
+    boardLogic.deckOfCards.push(boardLogic.createCard(10, 4));
+    boardLogic.deckOfCards.push(boardLogic.createCard(10, 4));
 }
 
 boardLogic.addGeneratedCards = function (number, color) {
@@ -112,6 +122,7 @@ boardLogic.drowCardsFromDeck = function (iPlayerId) {
         var numberOfCardsToDrow = 1;
         if (boardLogic.punishNumber > 0) {
             numberOfCardsToDrow = boardLogic.punishNumber;
+            boardLogic.punishNumber = 0;
         }
 
         if (utility.debug && boardLogic.debugdeckOfCards) {
@@ -151,23 +162,36 @@ boardLogic.getCardFromPlayer = function (iCard, iPlayerId) {
 
 boardLogic.cardRooles = function (iCard){
     // turn logic here, also mark the flags like +2 or the stop or + etc...
-    if (boardLogic.currentCard.number === 2) {
+    if (boardLogic.currentCard.number === 2 && boardLogic.punishNumber > 0) {
         // only +2 is plyble at this point
-        return iCard.number === 2;
+        if (iCard.number === 2) {
+            boardLogic.punishNumber += 2;
+            return true;
+        }
     }
     else if (boardLogic.openTaki) {
         // only taki color card are allow
-        return iCard.color === boardLogic.currentCard.color;
+        if (boardLogic.checkCardTakiColorWithBoard(iCard))
+        {
+            boardLogic.changColorSelection = 4;
+            boardLogic.handlePlusTwoCard(iCard);
+            return true;
+        }
+    }
+    else if (iCard.number === 10 && iCard.color === 4) {
+        // super taki
+        boardLogic.changColorSelection = boardLogic.currentCard.color;
+        boardLogic.openTaki = true;
+        return true;
     }
     else if (iCard.color === boardLogic.currentCard.color || iCard.color === boardLogic.changColorSelection || iCard.number === boardLogic.currentCard.number) {
-        if (iCard.number == 2) {
-            boardLogic.punishNumber += 2;
-        }
-        else if (iCard.number == 10) {
+        if (iCard.number == 10) {
             boardLogic.openTaki = true;
         }
 
-        if (boardLogic.currentCard.number === 12) {
+        boardLogic.handlePlusTwoCard(iCard);
+
+        if (boardLogic.currentCard.color === 4) {
             // the move after the change color need to reset it.
             boardLogic.changColorSelection = 4;
             boardUI.removechangeColor();
@@ -178,9 +202,25 @@ boardLogic.cardRooles = function (iCard){
     return false;
 }
 
+boardLogic.checkCardTakiColorWithBoard = function (iCard) {
+    return (iCard.color != 4 &&                                 // prevent change color in taki
+            (iCard.color === boardLogic.currentCard.color ||    // only same color in taki.
+             iCard.color === boardLogic.changColorSelection));    // in case of supper t0aki, only same selected color
+}
+
+boardLogic.handlePlusTwoCard = function(iCard){
+    if (iCard.number == 2) {
+        boardLogic.punishNumber += 2;
+        // card of type +2 will automaticly close the taki
+        boardLogic.closeTaki();
+    }
+}
+
 boardLogic.closeTaki = function () {
-    boardLogic.openTaki = false;
-    boardLogic.setPlayerTurn(false);
+    if (boardLogic.openTaki) {
+        boardLogic.openTaki = false;
+        boardLogic.setPlayerTurn(false);
+    }
 
     boardUI.closeTaki();
 }
@@ -267,10 +307,6 @@ boardLogic.checkPlayersTurn = function (iPlayerId) {
         return;
     }
 
-    if (!boardLogic.currentPlayer) {
-        boardLogic.currentPlayer = iPlayerId;
-    }
-
     if (boardLogic.currentPlayer != iPlayerId && iPlayerId != aiPlayer.playerId) {
         // player try to play, in case AI miss a turn
         boardLogic.makeAiMove();
@@ -297,9 +333,12 @@ boardLogic.validateUserInteraction = function (iPlayerId, iIsPlayMove) {
 }
 
 boardLogic.validateNoOtherOptionsToPlay = function(iCards){
-    if (boardLogic.isCardInTheSameColorExsist(iCards, boardLogic.currentCard.color) ||
-        boardLogic.isCardInTheSameNumberExsist(iCards, boardLogic.currentCard.number) ||
-        boardLogic.isColorLessOptionCardAvilable(iCards)) {
+    if ((boardLogic.currentCard.number != 2 &&
+            (boardLogic.isCardInTheSameColorExsist(iCards, boardLogic.currentCard.color) ||
+            boardLogic.isColorLessOptionCardAvilable(iCards))) ||
+        boardLogic.isCardInTheSameNumberExsist(iCards, boardLogic.currentCard.number)
+        )
+    {
         return false;
     }
 
