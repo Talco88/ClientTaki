@@ -66,6 +66,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Components\BotCards.js" />
+    <Content Include="Components\Card.js" />
+    <Content Include="Components\Board.js" />
+    <Content Include="Components\CentralUI.js" />
+    <Content Include="Components\CentralUIBoard.js" />
+    <Content Include="Components\PlayersCards.js" />
+    <Content Include="Components\Statistics.js" />
+    <Content Include="Components\UserSelection.js" />
     <Content Include="CSS\Board.css" />
     <Content Include="CSS\BoardLayout.css" />
     <Content Include="CSS\GeneralStyle.css" />
@@ -73,6 +81,7 @@
     <Content Include="Imgs\SuperTaki.JPG" />
     <Content Include="Imgs\taki-card-back.JPG" />
     <Content Include="JS\AiPlayer.js" />
+    <Content Include="Components\App.js" />
     <Content Include="JS\BoardUI.js" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">

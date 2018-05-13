@@ -9,7 +9,9 @@ boardLogic.totalNumberOfRounds = 0;
 boardLogic.totalPlayTime = 0;
 boardLogic.debugdeckOfCards = false;
 
-
+/// board logic in one class
+//const board = new BoradLogicClass();
+//export defualt BoradLogicClass;
 ///////////////////////////////////////////////////////////////////
 /////  +2 in the middle of the taki, what is the consequence?
 ///// supper taki color managment
@@ -24,6 +26,7 @@ boardLogic.init = function () {
     boardLogic.punishNumber = 0;
     boardLogic.deckOfCards = [];
     boardLogic.trashDeck = [];
+    boardLogic.history = [];
     boardLogic.openTaki = false;
     boardLogic.isWatingForCahngeColor = false;
     boardLogic.currentPlayer = playerLogic.playerId;

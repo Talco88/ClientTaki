@@ -32,8 +32,6 @@ boardUI.loadUI = function () {
     // no views open from last game.
     boardUI.closeTaki();
     boardUI.removeColorSelectionFromView();
-
-    //boardUI.uiUpdateInterval = setInterval(utility.updateBoardLayout, 2500);
 }
 
 boardUI.removeFromView = function () {
