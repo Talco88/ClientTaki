@@ -7,6 +7,10 @@ p {
     margin: 2px;
 }
 
+.section{
+    border: solid 1px;
+}
+
 .last-game-statistic{
     flex-direction: column;
 }

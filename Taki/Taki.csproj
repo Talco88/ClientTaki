@@ -69,6 +69,10 @@
     <Content Include="Components\BotCards.js" />
     <Content Include="Components\Card.js" />
     <Content Include="Components\Board.js" />
+    <Content Include="Components\CardBack.js" />
+    <Content Include="Components\CardCenterSection.js" />
+    <Content Include="Components\CardLowerSection.js" />
+    <Content Include="Components\CardUpperSection.js" />
     <Content Include="Components\CentralUI.js" />
     <Content Include="Components\CentralUIBoard.js" />
     <Content Include="Components\PlayersCards.js" />

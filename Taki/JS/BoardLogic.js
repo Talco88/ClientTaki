@@ -1,4 +1,4 @@
-﻿var boardLogic = {};
+﻿let boardLogic = {};
 
 boardLogic.firstHandDivision = 8;
 boardLogic.IsInit = false;
@@ -8,6 +8,7 @@ boardLogic.numberOfPlayers = 2;
 boardLogic.totalNumberOfRounds = 0;
 boardLogic.totalPlayTime = 0;
 boardLogic.debugdeckOfCards = false;
+
 
 /// board logic in one class
 //const board = new BoradLogicClass();
@@ -386,3 +387,6 @@ boardLogic.playerEndedGame = function () {
     boardLogic.isGameFinish = true;
     utility.finishGame("Hope you will finish the game next time");
 }
+
+
+export {boardLogic};
