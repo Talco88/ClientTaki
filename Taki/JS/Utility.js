@@ -7,7 +7,7 @@ utility.debug = true;
 utility.statisticInterval = 0;
 utility.statisticTotalGameTime = 0;
 
-
+/*
 utility.getCardHtml = function (iCard, iClickFunc) {
     var cardDiv = document.createElement('div');
     cardDiv.id = 'playersHandCard';
@@ -62,6 +62,7 @@ utility.flipedCard = function () {
 
     return cardDiv;
 }
+*/
 
 utility.onReSize = function () {
     utility.updateBoardLayout();

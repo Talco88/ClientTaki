@@ -1,12 +1,15 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom';
 import CardBack from './CardBack';
+import {Platform}  from './../JS/Platform.js';
 
 
 export default class BotCards extends React.Component {
     constructor(args){
         super(args);
-        this.state = {cards: [{id: 1, number: 4, color: 1},{id: 2, number: 6, color: 2},{id: 3, number: 1, color: 3},{id: 4, number: 10, color: 4}]};
+        this.platform = new Platform();
+        this.state = {cards:  this.platform.getOtherPlayerHand(1) };
+
     }
 
     setCards(iCards){
