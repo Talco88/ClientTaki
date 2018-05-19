@@ -8,8 +8,23 @@ export default class BotCards extends React.Component {
     constructor(args){
         super(args);
         this.platform = new Platform();
-        this.state = {cards:  this.platform.getOtherPlayerHand(1) };
+        this.state = {
+            playerId: 1,
+            cards:  this.platform.getOtherPlayerHand(1) 
+        };
 
+    }
+
+    componentDidMount() {
+        this.updateInterval = setInterval(
+            () => this.setCards(this.platform.getPlayerHand(this.state.playerId)),
+            this.platform.uiUpdateInterval
+        );
+    }
+
+      // We will tear down the timer in the componentWillUnmount() lifecycle hook:
+    componentWillUnmount() {
+        clearInterval(this.updateInterval);
     }
 
     setCards(iCards){

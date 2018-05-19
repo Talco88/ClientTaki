@@ -19,7 +19,7 @@ class BoardLogicClass {
         boardLogic.totalPlayTime = 0;
         boardLogic.debugdeckOfCards = false;
         boardLogic.isDebug = iIsDebug;
-        boardLogic.moveDelay = 1000;
+        boardLogic.moveDelay = 400;
         let aiFactory = new AiPlayerClass();
         boardLogic.aiPlayer = aiFactory.getAiState(boardLogic);
 
@@ -71,8 +71,19 @@ class BoardLogicClass {
             boardLogic.aiPlayer.init(boardLogic.playersHands[boardLogic.aiPlayerId]);
         }
 
+        boardLogic.getIsTakiOpen = function(){
+            return boardLogic.openTaki;
+        }
+
         boardLogic.getCurrentCard = function(){
             return boardLogic.currentCard;
+        }
+
+        boardLogic.getSelectedColor = function(){
+            return {
+                ColorNumber: boardLogic.changColorSelection, 
+                ColorText: boardLogic.cardColors[boardLogic.changColorSelection]
+            };
         }
 
         boardLogic.getPlayerHand = function(iPlayerId){
@@ -183,7 +194,9 @@ class BoardLogicClass {
                     console.log(boardLogic.deckOfCards);
                 }
                 boardLogic.setPlayerTurn(true);
-                return boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
+                let addCards = boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
+                boardLogic.playersHands[iPlayerId] = boardLogic.playersHands[iPlayerId].concat(addCards);
+                return boardLogic.playersHands[iPlayerId];
             }
             else {
                 return [];
@@ -276,15 +289,23 @@ class BoardLogicClass {
             }
         }
 
-        boardLogic.closeTaki = function () {
-            if (boardLogic.openTaki) {
-                boardLogic.openTaki = false;
-                boardLogic.setPlayerTurn(false);
+        boardLogic.closeTaki = function (iPlayerId) {
+            if (iPlayerId === boardLogic.currentPlayer){
+                if (boardLogic.openTaki) {
+                    boardLogic.openTaki = false;
+                    boardLogic.setPlayerTurn(false);
+                }
+                else{
+                    return "taki is not open";
+                }
             }
-            /*/////////////////////////////////////////////////////////
-            TODO:
-            boardUI.closeTaki();
-            ///////////////////////////////////////////////////////////*/
+            else{
+                return "this is not your turn";
+            }
+        }
+
+        boardLogic.getCurrentPlayer = function(){
+            return boardLogic.currentPlayer;
         }
 
         boardLogic.setPlayerTurn = function (iIsForceNextPlayer) {
@@ -333,6 +354,22 @@ class BoardLogicClass {
                     }
                 }
             }
+        }
+
+        boardLogic.getIsWatingForCahngeColor = function(){
+            return boardLogic.isWatingForCahngeColor;
+        }
+
+        boardLogic.setChangeColorFromString = function(iColorText, iPlayerId){
+            var colorNumber = 4;
+            for (var i = 0; i < Object.keys(boardLogic.cardColors).length; i++) {
+                if (boardLogic.cardColors[i].toUpperCase() == iColorText.toUpperCase()) {
+                    colorNumber = i;
+                }
+            }
+
+            boardLogic.setChangeColor(colorNumber, iPlayerId);
+            boardLogic.makeAiMove();
         }
 
         boardLogic.setChangeColor = function (iColor, iPlayerId) {
@@ -394,11 +431,12 @@ class BoardLogicClass {
             return stringMessage;
         }
 
-        boardLogic.validateNoOtherOptionsToPlay = function(iCards){
+        boardLogic.validateNoOtherOptionsToPlay = function(iPlayerId){
+            let cards = boardLogic.playersHands[iPlayerId];
             if ((boardLogic.currentCard.number != 2 &&
-                    (boardLogic.isCardInTheSameColorExsist(iCards, boardLogic.currentCard.color) ||
-                    boardLogic.isColorLessOptionCardAvilable(iCards))) ||
-                boardLogic.isCardInTheSameNumberExsist(iCards, boardLogic.currentCard.number)
+                    (boardLogic.isCardInTheSameColorExsist(cards, boardLogic.currentCard.color) ||
+                    boardLogic.isColorLessOptionCardAvilable(cards))) ||
+                boardLogic.isCardInTheSameNumberExsist(cards, boardLogic.currentCard.number)
                 )
             {
                 return false;

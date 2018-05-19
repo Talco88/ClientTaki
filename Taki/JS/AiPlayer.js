@@ -4,8 +4,6 @@
     getAiState(iBoard){
         var aiPlayer = {}
         aiPlayer.playerId = 1;
-        //aiPlayer.moveDelay = 500;
-        aiPlayer.forceDebug = false;
         aiPlayer.boardLogic = iBoard;
 
         aiPlayer.init = function (iCards) {
@@ -14,7 +12,7 @@
         }
 
         aiPlayer.drowCardsFromDeck = function () {
-            aiPlayer.Hand = aiPlayer.Hand.concat(this.boardLogic.drowCardsFromDeck(aiPlayer.playerId));
+            aiPlayer.Hand = this.boardLogic.drowCardsFromDeck(aiPlayer.playerId);
         }
 
         aiPlayer.makeMove = function () {
@@ -23,6 +21,7 @@
             var i = 0;
             var selectCard = null;
             var changeColor = null;
+            aiPlayer.Hand = this.boardLogic.getPlayerHand(aiPlayer.playerId);
 
             // validate that that the turn is the ai after the delay.
             if (this.boardLogic.currentPlayer === aiPlayer.playerId && !aiPlayer.isCurrentlyMakingMove) {
@@ -146,7 +145,7 @@
 
                 if (selectCard == null && changeColor == null) {
                     if (this.boardLogic.openTaki) {
-                        this.boardLogic.closeTaki();
+                        this.boardLogic.closeTaki(aiPlayer.playerId);
                         selectCard = "AI close taki";
                     }
                     else {
@@ -165,20 +164,24 @@
                 else if (selectCard == null && changeColor != null) {
                     // play the change color
                     if (this.boardLogic.getCardFromPlayer(changeColor, aiPlayer.playerId)) {
-                        aiPlayer.Hand.splice(changecolorIndex, 1);
+                        this.boardLogic.removeCardFromPlayer(changecolorIndex, aiPlayer.playerId);
                     }
                     var selectedColor = aiPlayer.getColorWithMaxCards();
-                    boardUI.setSelectedChangeColor(selectedColor, aiPlayer.playerId);
+                    /*////////////////////////////////////////////////////////////////////////////////////////
+                    TODO: find way update the UI in case of change color
+                    ////////////////////////////////////////////////////////////////////////////////////////*/
+                    this.boardLogic.setChangeColor(selectedColor, aiPlayer.playerId)
+                    //boardUI.setSelectedChangeColor(selectedColor, aiPlayer.playerId);
 
                     selectCard = "change color with color: " + this.boardLogic.cardColors[selectedColor];
                 }
                 else {
                     if (this.boardLogic.getCardFromPlayer(selectCard, aiPlayer.playerId)) {
-                        aiPlayer.Hand.splice(index, 1);
+                        this.boardLogic.removeCardFromPlayer(index, aiPlayer.playerId);
                     }
                 }
 
-                if (this.boardLogic.debug || aiPlayer.forceDebug) {
+                if (this.boardLogic.debug) {
                     console.log("AI play the following: ");
                     console.log(selectCard);
                 }
@@ -201,7 +204,7 @@
             var green = 0;
             var yellow = 0;
 
-            for (c of aiPlayer.Hand){
+            for (let c of aiPlayer.Hand){
             //aiPlayer.Hand.forEach(function (c) {
                 switch (c.color) {
                     case 0:

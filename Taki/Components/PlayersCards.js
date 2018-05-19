@@ -9,8 +9,23 @@ export default class PlayersCards extends React.Component {
         super(args);
         this.platform = new Platform();
         this.playerId = this.platform.playerId;
-        this.state = {cards:  this.platform.getPlayerHand(0) };
+        this.state = {
+            playerId: 0,
+            cards:  this.platform.getPlayerHand(0) 
+        };
         playerCardToShow = this;
+    }
+
+    componentDidMount() {
+        this.updateInterval = setInterval(
+            () => this.setCards(this.platform.getPlayerHand(this.state.playerId)),
+            this.platform.uiUpdateInterval
+        );
+    }
+
+      // We will tear down the timer in the componentWillUnmount() lifecycle hook:
+    componentWillUnmount() {
+        clearInterval(this.updateInterval);
     }
     
     setCards(iCards)

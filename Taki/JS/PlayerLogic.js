@@ -29,7 +29,7 @@ playerLogic.playSelectedCard = function (iCardIndex, iCardId, iCard) {
         return "Move is Illegal";
     }
 }
-
+/*
 playerLogic.drowCardsFromDeck = function () {
     var logicMessage = boardLogic.validateUserInteraction(playerLogic.playerId);
     if (logicMessage != "") {
@@ -53,7 +53,7 @@ playerLogic.drowCardsFromDeck = function () {
             console.log("try to pull whie there are other options to play");
         }
     }
-}
+}*/
 
 playerLogic.onclickEndGame = function () {
     playerLogic.isAborted = true;

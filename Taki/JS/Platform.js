@@ -12,6 +12,7 @@ export default class Platform {
         this.debug = true;
         this.playerId = 0;
         this.aiPlayerId = 1;
+        this.uiUpdateInterval = 300;
         let boardFactory = new BoardLogicClass();
         this.boardState = boardFactory.getBoardState(this.debug);
         this.boardState.init();
@@ -45,6 +46,62 @@ export default class Platform {
             console.log("boardState is not initiate");
         }
         return null;
+    }
+
+    getSelectedColor(){
+        if (this.boardState != null){
+            return this.boardState.getSelectedColor();
+        }
+        if (this.debug){
+            console.log("boardState is not initiate");
+        }
+        return null;
+    }
+
+    getCurrentPlayer(){
+        return this.boardState.getCurrentPlayer();
+    }
+
+    getIsTakiOpen(){
+        return this.boardState.getIsTakiOpen();
+    }
+
+    setCloseTaki(){
+        return this.boardState.closeTaki(this.playerId);
+    }
+
+    getIsWatingForCahngeColor(){
+        return this.boardState.getIsWatingForCahngeColor();
+    }
+
+    setNewColorString(iColorText){
+        this.boardState.setChangeColorFromString(iColorText, this.playerId);
+    }
+
+    getCardsFromDeck(iPlayerId){
+        var logicMessage = this.boardState.validateUserInteraction(iPlayerId);
+        if (logicMessage != "") {
+            console.log(logicMessage);
+            //utility.displayPopUp(logicMessage);
+        }
+        else if (this.boardState.validateNoOtherOptionsToPlay(iPlayerId)) {
+            var cards = this.boardState.drowCardsFromDeck(iPlayerId);
+            if (cards && cards.length > 0) {
+                //playerLogic.Hand = playerLogic.Hand.concat(cards);
+                //boardUI.printPlayerCardsToUser(playerLogic.Hand);
+            }
+            else {
+                if (this.debug) {
+                    console.log("try to pull card not in turn");
+                }
+            }
+        }
+        else {
+            //utility.displayPopUp("Let's not get too rush...\nLooks like you have some option to play");
+            if (this.debug) {
+                console.log("try to pull whie there are other options to play");
+            }
+        }
     }
 
     playSelectCard(iCardIndex, iCard, iPlayerId, iComponent){

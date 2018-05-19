@@ -25,7 +25,8 @@
 }
 
 .cards-deck {
-    background-image: url('/Imgs/taki-card-back.JPG');
+    /*background-image: url('/Imgs/taki-card-back.JPG');*/
+    background-image: url('../Imgs/backTaki.jpg');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
