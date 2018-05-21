@@ -25,8 +25,7 @@
 }
 
 .cards-deck {
-    /*background-image: url('/Imgs/taki-card-back.JPG');*/
-    background-image: url('../Imgs/backTaki.jpg');
+    background-image: url('./../Imgs/taki-card-back.png');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
@@ -111,7 +110,7 @@
 }
 
 .CC-inner {
-    background-image: url('/../Imgs/changeColor.JPG');
+    background-image: url('./../Imgs/changeColor.png');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 
@@ -119,7 +118,7 @@
 }
 
 .super-taki-inner {
-    background-image: url('/../Imgs/SuperTaki.JPG');
+    background-image: url('./../Imgs/SuperTaki.png');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: 50% 50%; 

@@ -2,7 +2,6 @@
 import ReactDOM from 'react-dom';
 import Card from './Card';
 import {Platform}  from './../JS/Platform.js';
-import takiBackImage from './../Imgs/backTaki.jpg';
 
 
 var openCardIU = null;

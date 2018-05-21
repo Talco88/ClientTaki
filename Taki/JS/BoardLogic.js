@@ -2,7 +2,8 @@
 
 ///////////////////////////////////////////////////////////////////
 /////  +2 in the middle of the taki, what is the consequence?
-///// supper taki color managment
+///// supper taki color managment after change color
+/////  avrage time per turn per human player not working....
 ///////////////////////////////////////////////////////////////////
 
 class BoardLogicClass {
@@ -38,10 +39,6 @@ class BoardLogicClass {
             boardLogic.openTaki = false;
             boardLogic.isWatingForCahngeColor = false;
             boardLogic.currentPlayer = 0;
-            /*/////////////////////////////////////////////
-            TODO:
-            boardUI.closeTaki();
-            ///////////////////////////////////////////////*/
             boardLogic.isGameFinish = false;
             for (var i = 1; i <= Object.keys(boardLogic.cardOptions).length; i++) {
                 for (var j = 0; j < (Object.keys(boardLogic.cardColors).length - 1); j++) {
@@ -58,6 +55,7 @@ class BoardLogicClass {
 
             // init player hands:
             boardLogic.initPlayersHands();
+            boardLogic.AddToHistory();
         }
 
         boardLogic.initPlayersHands = function (){
@@ -76,7 +74,11 @@ class BoardLogicClass {
         }
 
         boardLogic.getCurrentCard = function(){
-            return boardLogic.currentCard;
+            let retVal = boardLogic.currentCard;
+            if (boardLogic.isGameFinish){
+                retVal = boardLogic.history[boardLogic.historyIndex].openCard;
+            }
+            return retVal;
         }
 
         boardLogic.getSelectedColor = function(){
@@ -90,12 +92,17 @@ class BoardLogicClass {
             /*//////////////////////////////////////////////////
             add player validation
             ////////////////////////////////////////////////*/
+            let retVal = boardLogic.playersHands;
+            if (boardLogic.isGameFinish){
+                retVal = boardLogic.history[boardLogic.historyIndex].playerCards;
+            }
 
-            return boardLogic.playersHands[iPlayerId];
+            return retVal[iPlayerId];
         }
 
         boardLogic.removeCardFromPlayer = function(iCardIndex, iPlayerId){
             boardLogic.playersHands[iPlayerId].splice(iCardIndex, 1);
+            boardLogic.AddToHistory();
             return boardLogic.playersHands[iPlayerId];
         }
 
@@ -112,10 +119,6 @@ class BoardLogicClass {
             }
 
             boardLogic.currentCard = opendCard;
-            /*////////////////////////////////////////////////////////
-            TODO:
-            boardUI.printCurrentCard(boardLogic.currentCard);
-            //////////////////////////////////////////////////////////*/
         }
 
         boardLogic.CreateSupperTaki = function () {
@@ -196,6 +199,7 @@ class BoardLogicClass {
                 boardLogic.setPlayerTurn(true);
                 let addCards = boardLogic.getSomeCardsFromDeck(numberOfCardsToDrow);
                 boardLogic.playersHands[iPlayerId] = boardLogic.playersHands[iPlayerId].concat(addCards);
+                boardLogic.AddToHistory();
                 return boardLogic.playersHands[iPlayerId];
             }
             else {
@@ -217,11 +221,6 @@ class BoardLogicClass {
                 {
                     boardLogic.trowCardToTrash(boardLogic.currentCard);
                     boardLogic.currentCard = iCard;
-                    /*///////////////////////////////////////////////////////
-                    TODO:
-                    boardUI.printCurrentCard(boardLogic.currentCard);
-                    boardUI.openUISelection();
-                    //////////////////////////////////////////////////////////*/
                     boardLogic.setPlayerTurn(false);
                     return true;
                 }
@@ -264,10 +263,6 @@ class BoardLogicClass {
                 if (boardLogic.currentCard.color === 4) {
                     // the move after the change color need to reset it.
                     boardLogic.changColorSelection = 4;
-                    /*//////////////////////////////////////////////////////////////////
-                    TODO:
-                    boardUI.removechangeColor();
-                    /////////////////////////////////////////////////////////////////*/
                 }
                 return true;
             }
@@ -332,7 +327,6 @@ class BoardLogicClass {
             }
 
             boardLogic.currentPlayer = boardLogic.currentPlayer % boardLogic.numberOfPlayers;
-            boardLogic.totalNumberOfPlay++;
             boardLogic.totalNumberOfRounds++;
 
             if (boardLogic.isDebug) {
@@ -346,14 +340,25 @@ class BoardLogicClass {
         boardLogic.checkGameFinish = function () {
             if (boardLogic.currentCard.number != 13) {
                 if (boardLogic.playersHands[boardLogic.aiPlayerId].length === 0 || boardLogic.playersHands[boardLogic.humanPlayerId].length === 0) {
-                    boardLogic.isGameFinish = true;
-                    utility.finishGame();
+                    boardLogic.finishGame();
+                    /////// TODO: Finish in UI
                     if (boardLogic.isDebug) {
                         var winner = (boardLogic.playersHands[boardLogic.aiPlayerId].length === 0) ? "computer" : "Human";
                         console.log("game finish, and " + winner + " won!!");
                     }
                 }
             }
+        }
+
+        boardLogic.finishGame = function(){
+            boardLogic.historyIndex = boardLogic.history.length - 1;
+            boardLogic.isGameFinish = true;
+            boardLogic.openTaki = false;
+            boardLogic.isWatingForCahngeColor = false;
+        }
+
+        boardLogic.getIsGameEnded = function(){
+            return boardLogic.isGameFinish;
         }
 
         boardLogic.getIsWatingForCahngeColor = function(){
@@ -480,49 +485,46 @@ class BoardLogicClass {
         }
 
         boardLogic.playerEndedGame = function () {
-            boardLogic.isGameFinish = true;
-            utility.finishGame("Hope you will finish the game next time");
+            boardLogic.finishGame();
+            // TODO:::
+            //utility.finishGame("Hope you will finish the game next time");
         }
 
+        boardLogic.AddToHistory = function () {
+            boardLogic.totalNumberOfPlay++;
+            let currentBoardState = {};
+            currentBoardState.openCard = boardLogic.currentCard;
+            currentBoardState.playerCards = JSON.parse(JSON.stringify(boardLogic.playersHands));
+            boardLogic.history.push(currentBoardState);
 
+        }
 
-        boardLogic.getColorWithMaxCards = function (iCards) {
-            var red = 0;
-            var blue = 0;
-            var green = 0;
-            var yellow = 0;
-
-            iCards.forEach(function (c) {
-                switch (c.color) {
-                    case 0:
-                        green++;
-                        break;
-                    case 1:
-                        red++;
-                        break;
-                    case 2:
-                        yellow++;
-                        break;
-                    case 3:
-                        blue++;
-                        break;
-                }
-            });
-
-            var max = Math.max(red, blue, green, yellow);
-
-            // this is irelevent if we have more then one color with 'max'number of cards
-            if (green === max) {
-                return 0;
+        boardLogic.moveUpHistoryIndex = function(){
+            if (boardLogic.historyIndex < (boardLogic.history.length - 1)){
+                boardLogic.historyIndex++;
             }
-            if (red === max) {
-                return 1;
+
+            if(boardLogic.isDebug){
+                console.log("boardLogic.historyIndex: " + boardLogic.historyIndex);
             }
-            if (yellow === max) {
-                return 2;
+        }
+
+        boardLogic.moveDownHistoryIndex = function(){
+            if (boardLogic.historyIndex > 0){
+                boardLogic.historyIndex--;
             }
-            if (blue === max) {
-                return 3;
+            
+            if(boardLogic.isDebug){
+                console.log("boardLogic.historyIndex: " + boardLogic.historyIndex);
+            }
+        }
+
+        boardLogic.displayPlayer = function () {
+            if (boardLogic.isGameFinish) {
+                return "Game Finished";
+            }
+            else {
+                return (boardLogic.currentPlayer && boardLogic.currentPlayer === boardLogic.aiPlayerId) ? "AI" : "You";
             }
         }
 

@@ -75,8 +75,11 @@
     <Content Include="Components\CardUpperSection.js" />
     <Content Include="Components\CentralUI.js" />
     <Content Include="Components\CentralUIBoard.js" />
+    <Content Include="Components\LastGameStats.js" />
+    <Content Include="Components\Lobby.js" />
     <Content Include="Components\PlayersCards.js" />
     <Content Include="Components\SelectionUIGenerator.js" />
+    <Content Include="Components\BoardStatistics.js" />
     <Content Include="Components\Statistics.js" />
     <Content Include="Components\UserSelection.js" />
     <Content Include="CSS\Board.css" />

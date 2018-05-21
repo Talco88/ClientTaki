@@ -10,11 +10,19 @@ export default class Platform {
 
         _PlatformInstance = this;
         this.debug = true;
+        this.isTurnament = false;
+        this.isDisplayLobbyStats = false;
         this.playerId = 0;
         this.aiPlayerId = 1;
-        this.uiUpdateInterval = 300;
+        this.gameTime = 0;
+        this.playerTimer = 0;
+        this.uiUpdateInterval = 150;
         let boardFactory = new BoardLogicClass();
         this.boardState = boardFactory.getBoardState(this.debug);
+        this.boardState.init();
+    }
+
+    resetGame(){
         this.boardState.init();
     }
 
@@ -40,6 +48,7 @@ export default class Platform {
 
     getOpenCard(){
         if (this.boardState != null){
+            this.isDisplayLobbyStats = true;
             return this.boardState.getCurrentCard();
         }
         if (this.debug){
@@ -104,6 +113,14 @@ export default class Platform {
         }
     }
 
+    historyNext(){
+        this.boardState.moveUpHistoryIndex();
+    }
+
+    historyPrev(){
+        this.boardState.moveDownHistoryIndex();
+    }
+
     playSelectCard(iCardIndex, iCard, iPlayerId, iComponent){
         if (this.boardState.getCardFromPlayer(iCard, iPlayerId))
         {
@@ -130,6 +147,18 @@ export default class Platform {
         }
     }
 
+    getTotalNumberOfTurns(){
+        return this.boardState.totalNumberOfPlay;
+    }
+
+    getTimesPlayerGotOneCard(){
+        return this.boardState.timesPlayerGotOneCard;
+    }
+
+    getIsGameFinished(){
+        return this.boardState.getIsGameEnded();
+    }
+
     isUserCurrentTurn(iIsPlayMove){
         if (this.boardState != null){
             return this.boardState.validateUserInteraction(this.playerId, iIsPlayMove);
@@ -140,6 +169,13 @@ export default class Platform {
         return null;
     }
 
+    displayPlayer () {
+        return this.boardState.displayPlayer();
+    }
+
+    gameEnded(){
+        return 1/0;
+    }
 }
 
 export {Platform};

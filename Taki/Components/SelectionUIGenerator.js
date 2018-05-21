@@ -40,6 +40,14 @@ export default class SelectionUIGenerator extends React.Component {
     onChangeColorClicked(iEvent){
         this.platform.setNewColorString(iEvent.target.classList[1]);
     }
+
+    onNextBtnClicked(){
+        this.platform.historyNext();
+    }
+
+    onPrevBtnClicked(){
+        this.platform.historyPrev();
+    }
         
     render() {
         let isPlayerCurrentlyPlayer = (this.platform.playerId === this.state.currentPlayerId);
@@ -59,6 +67,18 @@ export default class SelectionUIGenerator extends React.Component {
                     <button type="button" className="color-button yellow"></button>
                     <button type="button" className="color-button blue"></button>
                     <button type="button" className="color-button green"></button>
+                </div>
+            );
+        }
+        else if (this.platform.getIsGameFinished()){
+            return (
+                <div>
+                    <button type="button" className="in-game-btn" onClick={this.onNextBtnClicked.bind(this)} >
+                        Next
+                    </button>
+                    <button type="button" className="in-game-btn" onClick={this.onPrevBtnClicked.bind(this)} >
+                        Prev
+                    </button>
                 </div>
             );
         }
