@@ -46,17 +46,24 @@ export default class BoardStatistics extends React.Component {
     }
 
     onEndGameClicked(){
+        if (this.platform.getIsGameFinished()){
+            this.platform.exitGameBoard();
+        }
+        else{
+            this.platform.playerEndedGame();
+        }
         console.log("ending Game...");
     }
 
     render() {
         this.isStopTimmer();
+        let btnString = (this.platform.getIsGameFinished()) ? "Exit" : "End Game";
         return (
             <div className="statistics">
                 <Statistics GameTime={this.state.gameTime}/>
                 <p>Currently Playing: {this.state.currentPlayer}</p>
                 <div className="finish-game">
-                    <button type="button" className="in-game-btn end-game-btn" onClick={this.onEndGameClicked.bind(this)}>End Game</button>
+                    <button type="button" className="in-game-btn end-game-btn" onClick={this.onEndGameClicked.bind(this)}>{btnString}</button>
                 </div>
             </div>
         );

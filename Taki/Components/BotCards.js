@@ -32,9 +32,10 @@ export default class BotCards extends React.Component {
     }
 
     render() {
+        let margin = this.platform.calculateMargininCards(this.state.cards.length, this.platform.unifyCardWidth);
         return (
             <div id="botCards" className="section bot-cards">
-                { this.state.cards.map((card) => (<CardBack key={card.id}/>))}
+                { this.state.cards.map((card) => (<CardBack key={card.id} marginR={margin}/>))}
             </div>
         );
     }

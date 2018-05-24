@@ -109,6 +109,15 @@
 
 }
 
+.statistics{
+    font-size: 18px;
+}
+
+.messaging{
+    font-size: 18px;
+}
+
+
 .CC-inner {
     background-image: url('./../Imgs/changeColor.png');
     background-repeat: no-repeat;
@@ -131,4 +140,24 @@
 
 .TAKI-inner{
     font-size: 60px;
+}
+
+@media screen and (max-width: 1000px){
+    .statistics{
+        font-size: 15px;
+    }
+    .messaging{
+        font-size: 15px;
+    }
+}
+
+
+
+@media screen and (max-width: 730px){
+    .statistics{
+        font-size: 12px;
+    }
+    .messaging{
+        font-size: 12px;
+    }
 }

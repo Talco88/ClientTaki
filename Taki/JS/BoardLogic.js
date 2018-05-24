@@ -1,9 +1,11 @@
 ﻿import {AiPlayerClass} from "./AiPlayer.js";
 
 ///////////////////////////////////////////////////////////////////
-/////  +2 in the middle of the taki, what is the consequence?
+/////  +2 in the middle of the taki, what is the consequence? will ignore unless it is in the end
 ///// supper taki color managment after change color
 /////  avrage time per turn per human player not working....
+////  BUG::: 2+ in taki may cous to allow put other +2 in diffrant color!
+////  BUG::: in some case the history currnt player have not change
 ///////////////////////////////////////////////////////////////////
 
 class BoardLogicClass {
@@ -438,10 +440,12 @@ class BoardLogicClass {
 
         boardLogic.validateNoOtherOptionsToPlay = function(iPlayerId){
             let cards = boardLogic.playersHands[iPlayerId];
-            if ((boardLogic.currentCard.number != 2 &&
-                    (boardLogic.isCardInTheSameColorExsist(cards, boardLogic.currentCard.color) ||
-                    boardLogic.isColorLessOptionCardAvilable(cards))) ||
-                boardLogic.isCardInTheSameNumberExsist(cards, boardLogic.currentCard.number)
+            if (
+                    (boardLogic.currentCard.number != 2 && 
+                        (boardLogic.isCardInTheSameColorExsist(cards, boardLogic.currentCard.color) ||
+                        boardLogic.isColorLessOptionCardAvilable(cards))) 
+                    ||
+                    boardLogic.isCardInTheSameNumberExsist(cards, boardLogic.currentCard.number)
                 )
             {
                 return false;
@@ -453,7 +457,7 @@ class BoardLogicClass {
         boardLogic.isColorLessOptionCardAvilable = function (iCards) {
             var retVal = false;
             iCards.forEach(function (card) {
-                if (card.color === 4) {
+                if (card.color === 4 && card.number != 10) {
                     retVal = true;
                 }
             });
@@ -495,6 +499,7 @@ class BoardLogicClass {
             let currentBoardState = {};
             currentBoardState.openCard = boardLogic.currentCard;
             currentBoardState.playerCards = JSON.parse(JSON.stringify(boardLogic.playersHands));
+            currentBoardState.playingPlayer = boardLogic.displayPlayer();
             boardLogic.history.push(currentBoardState);
 
         }
@@ -521,7 +526,7 @@ class BoardLogicClass {
 
         boardLogic.displayPlayer = function () {
             if (boardLogic.isGameFinish) {
-                return "Game Finished";
+                return boardLogic.history[boardLogic.historyIndex].playingPlayer;
             }
             else {
                 return (boardLogic.currentPlayer && boardLogic.currentPlayer === boardLogic.aiPlayerId) ? "AI" : "You";

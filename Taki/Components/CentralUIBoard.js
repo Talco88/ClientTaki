@@ -12,7 +12,8 @@ export default class CentralUIBoard extends React.Component {
         this.state = {
             playerId: 0,
             currentCard:  this.platform.getOpenCard(),
-            currentColor: 4
+            currentColor: 4,
+            PlayerMessages: this.platform.getMessageToPlayer()
         };
         openCardIU = this;
     }
@@ -33,7 +34,8 @@ export default class CentralUIBoard extends React.Component {
 
     setCard(iCard, iColor){
         this.setState({currentCard: iCard});
-        this.setState({currentColor: iColor})
+        this.setState({currentColor: iColor});
+        this.setState({PlayerMessages: this.platform.getMessageToPlayer()});
     }
 
     onClickedTakeCard(){
@@ -45,12 +47,17 @@ export default class CentralUIBoard extends React.Component {
         let currentCardClassName = "card " + this.state.currentColor.ColorText;
         return (
             <div className="central-board">
+                <div className="board-cards-data">
                     <div id="deckCards" className="card deck-wrapper" onClick={this.onClickedTakeCard.bind(this)}>
                         <div className="cards-deck">
                         </div>
                     </div>
-                <div id="currentCard" className={currentCardClassName}>
-                    <Card key={card.id} id={card.id} number={card.number} option={card.option} color={card.color} displayColor={card.displayColor}/>
+                    <div id="currentCard" className={currentCardClassName}>
+                        <Card key={card.id} id={card.id} number={card.number} option={card.option} color={card.color} displayColor={card.displayColor}/>
+                    </div>
+                </div>
+                <div className="messaging">
+                    <p>{this.state.PlayerMessages}</p>
                 </div>
             </div>
         );

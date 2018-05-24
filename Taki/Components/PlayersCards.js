@@ -34,14 +34,29 @@ export default class PlayersCards extends React.Component {
     }
 
     render() {
+        let margin = this.platform.calculateMargininCards(this.state.cards.length, this.platform.unifyCardWidth);
         return (
             <div id="playersCards" className="section player-cards">
-                { this.state.cards.map((card) => (<Card key={card.id} id={card.id} number={card.number} option={card.option} color={card.color} displayColor={card.displayColor} selection={this.onClickedSelectedCard.bind(this)}/>))}
+                { this.state.cards.map((card) => (
+                    <Card 
+                        key={card.id} 
+                        id={card.id} 
+                        number={card.number} 
+                        option={card.option} 
+                        color={card.color} 
+                        displayColor={card.displayColor} 
+                        selection={this.onClickedSelectedCard.bind(this)}
+                        marginR={margin}/>
+                    ))
+                }
             </div>
         );
     }
 
     onClickedSelectedCard(event){
+        if (this.platform.getIsGameFinished()){
+            return;
+        }
         let number = event.currentTarget.classList[0];
         let color = event.currentTarget.classList[1];
         let cardId = event.currentTarget.classList[2];
@@ -79,5 +94,4 @@ export default class PlayersCards extends React.Component {
             }
         }
     }
-
 }
