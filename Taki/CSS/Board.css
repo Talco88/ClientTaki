@@ -117,6 +117,10 @@
     font-size: 18px;
 }
 
+.messaging{
+    height: 75px;
+}
+
 
 .CC-inner {
     background-image: url('./../Imgs/changeColor.png');
@@ -149,6 +153,10 @@
     .messaging{
         font-size: 15px;
     }
+    .messaging{
+        height: 40px;
+    }
+    
 }
 
 
@@ -159,5 +167,8 @@
     }
     .messaging{
         font-size: 12px;
+    }
+    .messaging{
+        height: 30px;
     }
 }

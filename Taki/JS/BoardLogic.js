@@ -6,6 +6,9 @@
 /////  avrage time per turn per human player not working....
 ////  BUG::: 2+ in taki may cous to allow put other +2 in diffrant color!
 ////  BUG::: in some case the history currnt player have not change
+////
+////  optional for better suppoert: board will call for all other with the data.
+////
 ///////////////////////////////////////////////////////////////////
 
 class BoardLogicClass {
