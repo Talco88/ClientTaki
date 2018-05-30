@@ -7,19 +7,19 @@ import {Platform}  from './../JS/Platform.js';
 export default class Lobby extends React.Component {
     constructor(args){
         super(args);
-        this.platform = new Platform();
-        this.state = { startGame: false };
+        this.platform = new Platform(this.updateData.bind(this));
+        this.state = { 
+            startGame: false
+         };
     }
 
-    componentDidMount() {
-        this.updateInterval = setInterval(
-            () => this.setEndGame(),
-            this.platform.uiUpdateInterval
-        );
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.updateInterval);
+    updateData(iOpenCard, iPlayerCards, iOponentCards){
+        this.setEndGame();
+        this.setState({currentCard: iOpenCard});
+        this.setState({currentColor: this.platform.getSelectedColor()});
+        this.setState({playersCard: iPlayerCards});
+        this.setState({otherCards: iOponentCards});
+        this.setState({messageToPlayer: this.platform.getMessageToPlayer()});
     }
 
     setEndGame(){
@@ -47,7 +47,13 @@ export default class Lobby extends React.Component {
         }
         else{
             return(
-                <Board />
+                <Board 
+                    CurrentCard = {this.state.currentCard} 
+                    CurrentColor={this.state.currentColor} 
+                    MessageToPlayer = {this.state.messageToPlayer} 
+                    PlayersCard = {this.state.playersCard}
+                    AiCards = {this.state.otherCards}
+                />
             );
         }
     }

@@ -9,35 +9,25 @@ export default class PlayersCards extends React.Component {
         super(args);
         this.platform = new Platform();
         this.playerId = this.platform.playerId;
+        this.cards = this.platform.getPlayerHand(0); 
         this.state = {
-            playerId: 0,
-            cards:  this.platform.getPlayerHand(0) 
+            playerId: 0
+            //cards:  this.platform.getPlayerHand(0) 
         };
         playerCardToShow = this;
     }
 
-    componentDidMount() {
-        this.updateInterval = setInterval(
-            () => this.setCards(this.platform.getPlayerHand(this.state.playerId)),
-            this.platform.uiUpdateInterval
-        );
-    }
-
-      // We will tear down the timer in the componentWillUnmount() lifecycle hook:
-    componentWillUnmount() {
-        clearInterval(this.updateInterval);
-    }
-    
     setCards(iCards)
     {
         this.setState({cards: iCards});
     }
 
     render() {
-        let margin = this.platform.calculateMargininCards(this.state.cards.length, this.platform.unifyCardWidth);
+        this.cards = this.props.PlayersCard;
+        let margin = this.platform.calculateMargininCards(this.cards.length, this.platform.unifyCardWidth);
         return (
             <div id="playersCards" className="section player-cards">
-                { this.state.cards.map((card) => (
+                { this.cards.map((card) => (
                     <Card 
                         key={card.id} 
                         id={card.id} 
@@ -67,11 +57,12 @@ export default class PlayersCards extends React.Component {
         
         let logicMessage = this.platform.isUserCurrentTurn(true);
         if (logicMessage != "") {
-            console.log(logicMessage);
-            //utility.displayPopUp(logicMessage);
+            if (this.platform.debug){
+                console.log(logicMessage);
+            }
         }
         else {
-            this.state.cards.forEach(function (card) {
+            this.cards.forEach(function (card) {
                 if (card.id == cardId) {
                     selectedCard = card;
                     index = i;
@@ -80,17 +71,11 @@ export default class PlayersCards extends React.Component {
             })
 
             if (index >= 0) {
-                var responce = this.platform.playSelectCard(index, selectedCard, this.playerId , this);
-                if (responce != "") {
-                    if (this.platform.debug) {
-                        console.log(responce);
-                    }
-                }
+                this.platform.playSelectCard(index, selectedCard, this.playerId , this);
             }
             else {
                 let message = "Ouppsy, unable to find the card";
                 console.log(message);
-                //utility.displayPopUp("Ouppsy, unable to find the card");
             }
         }
     }

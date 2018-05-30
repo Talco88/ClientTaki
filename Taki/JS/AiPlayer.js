@@ -41,7 +41,6 @@
                     var subSelectionIndex = 0;
 
                     for(let specialCard of aiPlayer.Hand){
-                    //aiPlayer.Hand.forEach(function (specialCard) {
                         if (specialCard.number === 11) {
                             numberOfStops++;
                         }
@@ -98,10 +97,9 @@
 
                 if (selectCard == null) {
                     for (let card of aiPlayer.Hand){
-                    //aiPlayer.Hand.forEach(function (card) {
-                        if (this.boardLogic.currentCard.number === 2) {
-                            // open card 2+, only 2+ is valid chois
-                            if (this.boardLogic.currentCard.number === card.number) {
+                        if (this.boardLogic.currentCard.number === 2 && this.boardLogic.punishNumber > 0)
+                        {
+                            if (this.boardLogic.currentCard.number === card.number){
                                 selectCard = card;
                                 index = i;
                             }

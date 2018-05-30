@@ -14,7 +14,7 @@ export default class SelectionUIGenerator extends React.Component {
         };
 
     }
-
+/*
     componentDidMount() {
         this.updateInterval = setInterval(
             () => this.setBoardState(),
@@ -29,10 +29,10 @@ export default class SelectionUIGenerator extends React.Component {
 
     setBoardState(){
         this.setState({currentPlayerId: this.platform.getCurrentPlayer()});
-        this.setState({takiOpen:  this.platform.getIsTakiOpen()});
+        this.setState({takiOpen:  });
         this.setState({changeColorOpen: this.platform.getIsWatingForCahngeColor()});
     }
-
+*/
     onCloseTakiClicked(){
         this.platform.setCloseTaki();
     }
@@ -50,8 +50,8 @@ export default class SelectionUIGenerator extends React.Component {
     }
         
     render() {
-        let isPlayerCurrentlyPlayer = (this.platform.playerId === this.state.currentPlayerId);
-        if (isPlayerCurrentlyPlayer && this.state.takiOpen){
+        let isPlayerCurrentlyPlayer = (this.platform.playerId === this.platform.getCurrentPlayer());
+        if (isPlayerCurrentlyPlayer && this.platform.getIsTakiOpen()){
             return (
                 <div className="close-taki">
                     <button type="button" className="end-taki-button in-game-btn" onClick={this.onCloseTakiClicked.bind(this)} >
@@ -60,7 +60,7 @@ export default class SelectionUIGenerator extends React.Component {
                 </div>
             );
         }
-        else if(isPlayerCurrentlyPlayer && this.state.changeColorOpen){
+        else if(isPlayerCurrentlyPlayer && this.platform.getIsWatingForCahngeColor()){
             return(
                 <div className="color-selection" onClick={this.onChangeColorClicked.bind(this)} >
                     <button type="button" className="color-button red"></button>

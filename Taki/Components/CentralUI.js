@@ -10,7 +10,11 @@ export default class CentralUI extends React.Component {
         return (
             <div className="section central-ui">
                 <BoardStatistics />
-                <CentralUIBoard/>
+                <CentralUIBoard 
+                    CurrentCard = {this.props.CurrentCard} 
+                    CurrentColor={this.props.CurrentColor}
+                    MessageToPlayer={this.props.MessageToPlayer}
+                />
                 <UserSelection />
             </div>
         );

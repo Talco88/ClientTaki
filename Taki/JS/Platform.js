@@ -3,12 +3,13 @@
 let _PlatformInstance = null;
 export default class Platform {
     // singelton platform
-    constructor(){
+    constructor(iUICallback){
         if(_PlatformInstance){
             return _PlatformInstance;
         }
 
         _PlatformInstance = this;
+        this.Callback = iUICallback;
         this.debug = true;
         this.isTurnament = false;
         this.isDisplayLobbyStats = false;
@@ -28,6 +29,24 @@ export default class Platform {
     resetGame(){
         this.boardState.init();
         this.MessageToPlayer = "";
+        this.gameTime = 0;
+        this.updateUIAfterChanges();
+    }
+
+    updateUIData(){
+        setTimeout(this.updateUIAfterChanges.bind(this), 1); // in some cases nees some delay to update all changes
+        this.updateUIDelay();
+    }
+
+    updateUIDelay(){
+        setTimeout(this.updateUIAfterChanges.bind(this), 700);
+    }
+
+    updateUIAfterChanges(){
+        this.Callback(this.getOpenCard(), this.getPlayerHand(this.playerId), this.getOtherPlayerHand(this.aiPlayerId));
+        if (this.getCurrentPlayer() === this.aiPlayerId){
+            this.updateUIDelay();
+        }
     }
 
     getPlayerHand(iPlayerId){
@@ -80,7 +99,8 @@ export default class Platform {
     }
 
     setCloseTaki(){
-        return this.boardState.closeTaki(this.playerId);
+        this.MessageToPlayer = this.boardState.closeTaki(this.playerId);
+        this.updateUIData();
     }
 
     getIsWatingForCahngeColor(){
@@ -89,6 +109,7 @@ export default class Platform {
 
     setNewColorString(iColorText){
         this.boardState.setChangeColorFromString(iColorText, this.playerId);
+        this.updateUIData();
     }
 
     getCardsFromDeck(iPlayerId){
@@ -104,8 +125,7 @@ export default class Platform {
             else if (this.boardState.validateNoOtherOptionsToPlay(iPlayerId)) {
                 var cards = this.boardState.drowCardsFromDeck(iPlayerId);
                 if (cards && cards.length > 0) {
-                    //playerLogic.Hand = playerLogic.Hand.concat(cards);
-                    //boardUI.printPlayerCardsToUser(playerLogic.Hand);
+
                 }
                 else {
                     if (this.debug) {
@@ -120,14 +140,17 @@ export default class Platform {
                 }
             }
         }
+        this.updateUIData();
     }
 
     historyNext(){
         this.boardState.moveUpHistoryIndex();
+        this.updateUIAfterChanges();
     }
 
     historyPrev(){
         this.boardState.moveDownHistoryIndex();
+        this.updateUIAfterChanges();
     }
 
     playSelectCard(iCardIndex, iCard, iPlayerId, iComponent){
@@ -139,14 +162,12 @@ export default class Platform {
                     // state
                     let cards = this.boardState.removeCardFromPlayer(iCardIndex, iPlayerId);
                     iComponent.setCards(cards);
-                    //boardUI.printPlayerCardsToUser(playerLogic.Hand);
 
                     if (cards.length === 1) {
                         this.boardState.updateOneCard();
                     }
                     this.boardState.checkGameFinish();
                 }
-                return "";
             }
             else {
                 let message = "Move is illegal... \nLet's try another card";
@@ -154,17 +175,17 @@ export default class Platform {
                 if (this.debug){
                     console.log(message);
                 }
-                return "Move is Illegal";
             }
         }
+        this.updateUIData();
     }
 
     getTotalNumberOfTurns(){
-        return this.boardState.totalNumberOfPlay;
+        return this.boardState.getTotalNumberOfPlay();
     }
 
     getTimesPlayerGotOneCard(){
-        return this.boardState.timesPlayerGotOneCard;
+        return this.boardState.getTimesPlayerGotOneCard();
     }
 
     getIsGameFinished(){
@@ -173,7 +194,9 @@ export default class Platform {
 
     isUserCurrentTurn(iIsPlayMove){
         if (this.boardState != null){
-            return this.boardState.validateUserInteraction(this.playerId, iIsPlayMove);
+            let retVal = this.boardState.validateUserInteraction(this.playerId, iIsPlayMove);
+            this.MessageToPlayer = retVal;
+            return retVal;
         }
         if (this.debug){
             console.log("boardState is not initiate");
@@ -185,18 +208,15 @@ export default class Platform {
         return this.boardState.displayPlayer();
     }
 
-    gameEnded(){
-        this.MessageToPlayer = "";
-
-        return 1/0;
-    }
-
     playerEndedGame(){
         this.boardState.playerEndedGame();
+        this.MessageToPlayer = "Hope you will finish the game next time,\n computer win!";
+        this.updateUIAfterChanges();
     }
 
     exitGameBoard(){
         this.gameMode = 0;
+        this.updateUIAfterChanges();
     }
 
     calculateMargininCards(numberOfCards, cardWidth) {
@@ -208,6 +228,10 @@ export default class Platform {
     }
 
     getMessageToPlayer(){
+        if (this.getIsGameFinished()){
+            let  finishMsg = this.boardState.getWinner();
+            this.MessageToPlayer = finishMsg;
+        }
         return this.MessageToPlayer;
     }
 }

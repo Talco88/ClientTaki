@@ -18,24 +18,10 @@ export default class CentralUIBoard extends React.Component {
         openCardIU = this;
     }
 
-    //hook runs after the component output has been rendered to the DOM
-    componentDidMount() {
-        this.updateInterval = setInterval(
-          () => this.setCard(this.platform.getOpenCard(), this.platform.getSelectedColor()),
-          this.platform.uiUpdateInterval
-        );
-      }
-
-      // We will tear down the timer in the componentWillUnmount() lifecycle hook:
-      componentWillUnmount() {
-        clearInterval(this.updateInterval);
-      }
-   
-
     setCard(iCard, iColor){
         this.setState({currentCard: iCard});
         this.setState({currentColor: iColor});
-        this.setState({PlayerMessages: this.platform.getMessageToPlayer()});
+        //this.setState({PlayerMessages: this.platform.getMessageToPlayer()});
     }
 
     onClickedTakeCard(){
@@ -43,8 +29,8 @@ export default class CentralUIBoard extends React.Component {
     }
 
     render() {
-        let card = this.state.currentCard;
-        let currentCardClassName = "card " + this.state.currentColor.ColorText;
+        let card = this.props.CurrentCard;
+        let currentCardClassName = "card " + this.props.CurrentColor.ColorText;
         return (
             <div className="central-board">
                 <div className="board-cards-data">
@@ -57,7 +43,7 @@ export default class CentralUIBoard extends React.Component {
                     </div>
                 </div>
                 <div className="messaging">
-                    <p>{this.state.PlayerMessages}</p>
+                    <p>{this.props.MessageToPlayer}</p>
                 </div>
             </div>
         );

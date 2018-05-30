@@ -1,13 +1,9 @@
 ﻿import {AiPlayerClass} from "./AiPlayer.js";
 
 ///////////////////////////////////////////////////////////////////
-/////  +2 in the middle of the taki, what is the consequence? will ignore unless it is in the end
-///// supper taki color managment after change color
 /////  avrage time per turn per human player not working....
-////  BUG::: 2+ in taki may cous to allow put other +2 in diffrant color!
-////  BUG::: in some case the history currnt player have not change
 ////
-////  optional for better suppoert: board will call for all other with the data.
+////  BUG::: 2+ in taki may cous to allow put other +2 in diffrant color! - shuld be fix
 ////
 ///////////////////////////////////////////////////////////////////
 
@@ -21,8 +17,6 @@ class BoardLogicClass {
         boardLogic.IsInit = false;
         boardLogic.cardColors = Object.freeze({ 0: "Green", 1: "Red", 2: "Yellow", 3: "Blue", 4: "Non" });
         boardLogic.cardOptions = Object.freeze({ 1: "1", 2: "+2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "TAKI", 11: "Stop", 12: "CC", 13: "+" });
-        boardLogic.totalNumberOfRounds = 0;
-        boardLogic.totalPlayTime = 0;
         boardLogic.debugdeckOfCards = false;
         boardLogic.isDebug = iIsDebug;
         boardLogic.moveDelay = 400;
@@ -35,6 +29,7 @@ class BoardLogicClass {
             boardLogic.totalNumberOfPlay = 0;
             boardLogic.totalPlayTime = 0;
             boardLogic.timesPlayerGotOneCard = 0;
+            boardLogic.totalNumberOfRounds = 0;
             boardLogic.changColorSelection = 4;
             boardLogic.punishNumber = 0;
             boardLogic.deckOfCards = [];
@@ -42,6 +37,7 @@ class BoardLogicClass {
             boardLogic.history = [];
             boardLogic.playersHands = [];
             boardLogic.openTaki = false;
+            boardLogic.isPlayerQuit = false;
             boardLogic.isWatingForCahngeColor = false;
             boardLogic.currentPlayer = 0;
             boardLogic.isGameFinish = false;
@@ -112,7 +108,8 @@ class BoardLogicClass {
         }
 
         boardLogic.getOtherPlayerHand = function(iOtherPlayerId){
-            return boardLogic.playersHands[iOtherPlayerId];
+            // validation?
+            return boardLogic.getPlayerHand(iOtherPlayerId);
         }
 
         boardLogic.openFirstCard = function () {
@@ -236,25 +233,28 @@ class BoardLogicClass {
 
         boardLogic.cardRooles = function (iCard){
             // turn logic here, also mark the flags like +2 or the stop or + etc...
-            if (boardLogic.currentCard.number === 2 && boardLogic.punishNumber > 0) {
-                // only +2 is plyble at this point
-                if (iCard.number === 2) {
-                    boardLogic.punishNumber += 2;
-                    return true;
-                }
-            }
-            else if (boardLogic.openTaki) {
+            if (boardLogic.openTaki) {
                 // only taki color card are allow
                 if (boardLogic.checkCardTakiColorWithBoard(iCard))
                 {
                     boardLogic.changColorSelection = 4;
+                    return true;
+                }
+            }
+            else if (boardLogic.currentCard.number === 2 && boardLogic.punishNumber > 0)
+            {
+                // only +2 is plyble at this point
+                if(iCard.number === 2){
                     boardLogic.handlePlusTwoCard(iCard);
                     return true;
                 }
             }
             else if (iCard.number === 10 && iCard.color === 4) {
                 // super taki
-                boardLogic.changColorSelection = boardLogic.currentCard.color;
+                if (boardLogic.currentCard.number != 12){
+                    boardLogic.changColorSelection = boardLogic.currentCard.color;
+                }
+                
                 boardLogic.openTaki = true;
                 return true;
             }
@@ -278,14 +278,12 @@ class BoardLogicClass {
         boardLogic.checkCardTakiColorWithBoard = function (iCard) {
             return (iCard.color != 4 &&                                 // prevent change color in taki
                     (iCard.color === boardLogic.currentCard.color ||    // only same color in taki.
-                     iCard.color === boardLogic.changColorSelection));    // in case of supper t0aki, only same selected color
+                     iCard.color === boardLogic.changColorSelection));    // in case of supper taki, only same selected color
         }
 
         boardLogic.handlePlusTwoCard = function(iCard){
             if (iCard.number == 2) {
                 boardLogic.punishNumber += 2;
-                // card of type +2 will automaticly close the taki
-                boardLogic.closeTaki();
             }
         }
 
@@ -293,7 +291,12 @@ class BoardLogicClass {
             if (iPlayerId === boardLogic.currentPlayer){
                 if (boardLogic.openTaki) {
                     boardLogic.openTaki = false;
+                    if (boardLogic.currentCard.number === 2){
+                        // during taki inly the last +2 counted so all other are canceled
+                        boardLogic.punishNumber = 2;
+                    }
                     boardLogic.setPlayerTurn(false);
+                    return "";
                 }
                 else{
                     return "taki is not open";
@@ -342,17 +345,36 @@ class BoardLogicClass {
 
         }
 
+        boardLogic.getTotalNumberOfPlay = function(){
+            let retVal = boardLogic.totalNumberOfRounds;
+            if (boardLogic.isGameFinish){
+                retVal = boardLogic.historyIndex;
+            }
+            return retVal;
+        }
+
+        boardLogic.getTimesPlayerGotOneCard = function() {
+            let retVal = boardLogic.timesPlayerGotOneCard;
+            if (boardLogic.isGameFinish){
+                retVal = boardLogic.history[boardLogic.historyIndex].timesPlayerGotOneCard;
+            }
+            return retVal;
+        }
+
         boardLogic.checkGameFinish = function () {
             if (boardLogic.currentCard.number != 13) {
                 if (boardLogic.playersHands[boardLogic.aiPlayerId].length === 0 || boardLogic.playersHands[boardLogic.humanPlayerId].length === 0) {
                     boardLogic.finishGame();
-                    /////// TODO: Finish in UI
-                    if (boardLogic.isDebug) {
-                        var winner = (boardLogic.playersHands[boardLogic.aiPlayerId].length === 0) ? "computer" : "Human";
-                        console.log("game finish, and " + winner + " won!!");
-                    }
                 }
             }
+        }
+
+        boardLogic.getWinner = function() {
+            if (boardLogic.isPlayerQuit){
+                return "Hope you will finish the game next time,\n Computer win!";
+            }
+            let winner = (boardLogic.playersHands[boardLogic.aiPlayerId].length === 0) ? "Computer" : "You";
+            return "game finish, and " + winner  + " win!!";
         }
 
         boardLogic.finishGame = function(){
@@ -371,14 +393,16 @@ class BoardLogicClass {
         }
 
         boardLogic.setChangeColorFromString = function(iColorText, iPlayerId){
-            var colorNumber = 4;
-            for (var i = 0; i < Object.keys(boardLogic.cardColors).length; i++) {
-                if (boardLogic.cardColors[i].toUpperCase() == iColorText.toUpperCase()) {
-                    colorNumber = i;
+            if (boardLogic.isWatingForCahngeColor){
+                var colorNumber = 4;
+                for (var i = 0; i < Object.keys(boardLogic.cardColors).length; i++) {
+                    if (boardLogic.cardColors[i].toUpperCase() == iColorText.toUpperCase()) {
+                        colorNumber = i;
+                    }
                 }
-            }
 
-            boardLogic.setChangeColor(colorNumber, iPlayerId);
+                boardLogic.setChangeColor(colorNumber, iPlayerId);
+            }
             boardLogic.makeAiMove();
         }
 
@@ -443,8 +467,9 @@ class BoardLogicClass {
 
         boardLogic.validateNoOtherOptionsToPlay = function(iPlayerId){
             let cards = boardLogic.playersHands[iPlayerId];
+            let checkColor = (boardLogic.currentCard.color === 4) ? boardLogic.changColorSelection : boardLogic.currentCard.color;
             if (
-                    (boardLogic.currentCard.number != 2 && 
+                    ((boardLogic.currentCard.number != 2 || boardLogic.punishNumber === 0) &&
                         (boardLogic.isCardInTheSameColorExsist(cards, boardLogic.currentCard.color) ||
                         boardLogic.isColorLessOptionCardAvilable(cards))) 
                     ||
@@ -480,7 +505,7 @@ class BoardLogicClass {
         boardLogic.isCardInTheSameNumberExsist = function (iCards, iNumber) {
             var retVal = false;
             iCards.forEach(function (card) {
-                if (card.number === iNumber) {
+                if (card.number === iNumber && (iNumber != 10 || card.color != 4)) {
                     retVal = true;
                 }
             });
@@ -493,14 +518,14 @@ class BoardLogicClass {
 
         boardLogic.playerEndedGame = function () {
             boardLogic.finishGame();
-            // TODO:::
-            //utility.finishGame("Hope you will finish the game next time");
+            boardLogic.isPlayerQuit = true;
         }
 
         boardLogic.AddToHistory = function () {
             boardLogic.totalNumberOfPlay++;
             let currentBoardState = {};
             currentBoardState.openCard = boardLogic.currentCard;
+            currentBoardState.timesPlayerGotOneCard = boardLogic.timesPlayerGotOneCard;
             currentBoardState.playerCards = JSON.parse(JSON.stringify(boardLogic.playersHands));
             currentBoardState.playingPlayer = boardLogic.displayPlayer();
             boardLogic.history.push(currentBoardState);
@@ -532,7 +557,7 @@ class BoardLogicClass {
                 return boardLogic.history[boardLogic.historyIndex].playingPlayer;
             }
             else {
-                return (boardLogic.currentPlayer && boardLogic.currentPlayer === boardLogic.aiPlayerId) ? "AI" : "You";
+                return (boardLogic.currentPlayer && boardLogic.currentPlayer === boardLogic.aiPlayerId) ? "Computer" : "You";
             }
         }
 
