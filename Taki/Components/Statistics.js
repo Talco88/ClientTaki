@@ -21,21 +21,16 @@ export default class Statistics extends React.Component {
     }
 
     render() {
-        if (this.props.GameTime){
-            let numberOfturns = this.platform.getTotalNumberOfTurns();
-            let avrageTime = (numberOfturns === 0) ?  this.props.GameTime : this.props.GameTime / numberOfturns;
+        let numberOfturns = this.platform.getTotalNumberOfTurns();
+        let avrageTime = (numberOfturns === 0) ?  this.props.GameTime : this.props.GameTime / numberOfturns;
 
-            return (
-                <div className="statistic-data">
-                    <p>Total game time is: {this.parsTimeToMinAndSec(this.props.GameTime)}</p>
-                    <p>Total number of turns: {numberOfturns}</p>
-                    <p>Average time per-turn: {this.parsTimeToMinAndSec(avrageTime)} </p>
-                    <p>Number of one card: {this.platform.getTimesPlayerGotOneCard()}</p>
-                </div>
-            );
-        }
-        else{
-            return (null);
-        }
+        return (
+            <div className="statistic-data">
+                <p>Total game time is: {this.parsTimeToMinAndSec(this.props.GameTime)}</p>
+                <p>Total number of turns: {numberOfturns}</p>
+                <p>Average time per-turn: {this.parsTimeToMinAndSec(avrageTime)} </p>
+                <p>Number of one card: {this.platform.getTimesPlayerGotOneCard()}</p>
+            </div>
+        );
     }
 }

@@ -26,11 +26,13 @@ export default class Platform {
         this.boardState.init();
     }
 
-    resetGame(){
+    resetGame(iIsRerender = true){
         this.boardState.init();
         this.MessageToPlayer = "";
         this.gameTime = 0;
-        this.updateUIAfterChanges();
+        if (iIsRerender){
+            this.updateUIAfterChanges();
+        }
     }
 
     updateUIData(){
@@ -78,6 +80,10 @@ export default class Platform {
             console.log("boardState is not initiate");
         }
         return null;
+    }
+
+    getNumberOfHistorySteps(){
+        return this.boardState.getNumberOfHistorySteps();
     }
 
     getSelectedColor(){
@@ -189,6 +195,12 @@ export default class Platform {
     }
 
     getIsGameFinished(){
+        if (this.numberOfGames && this.numberOfGames > 0 && this.boardState.getIsGameEnded()){
+            this.numberOfGames--;
+            this.calculatePlayerScores();
+            this.resetGame(false);
+            this.MessageToPlayer = "Current game scores: \n Human: " + this.humanPlayerScore + "\nAI: " + this.aiPlayerScore;
+        }
         return this.boardState.getIsGameEnded();
     }
 
@@ -233,6 +245,24 @@ export default class Platform {
             this.MessageToPlayer = finishMsg;
         }
         return this.MessageToPlayer;
+    }
+
+
+
+    /////////////
+    // this section manage the Tournament data
+    /////////////
+    calculatePlayerScores(){
+        this.humanPlayerScore += this.boardState.CalculatePlayerTournamentScore(1);
+        this.aiPlayerScore += this.boardState.CalculatePlayerTournamentScore(0);
+
+    }
+
+    setNewGameInTournament(){
+        this.humanPlayerScore = 0;
+        this.aiPlayerScore = 0;
+        this.numberOfGames = 2;
+        this.resetGame();
     }
 }
 

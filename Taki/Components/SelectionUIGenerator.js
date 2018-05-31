@@ -14,25 +14,7 @@ export default class SelectionUIGenerator extends React.Component {
         };
 
     }
-/*
-    componentDidMount() {
-        this.updateInterval = setInterval(
-            () => this.setBoardState(),
-            this.platform.uiUpdateInterval
-        );
-    }
 
-      // We will tear down the timer in the componentWillUnmount() lifecycle hook:
-    componentWillUnmount() {
-        clearInterval(this.updateInterval);
-    }
-
-    setBoardState(){
-        this.setState({currentPlayerId: this.platform.getCurrentPlayer()});
-        this.setState({takiOpen:  });
-        this.setState({changeColorOpen: this.platform.getIsWatingForCahngeColor()});
-    }
-*/
     onCloseTakiClicked(){
         this.platform.setCloseTaki();
     }
@@ -73,10 +55,20 @@ export default class SelectionUIGenerator extends React.Component {
         else if (this.platform.getIsGameFinished()){
             return (
                 <div>
-                    <button type="button" className="in-game-btn" onClick={this.onNextBtnClicked.bind(this)} >
+                    <button 
+                        type="button" 
+                        className="in-game-btn" 
+                        onClick={this.onNextBtnClicked.bind(this)} 
+                        disabled={this.platform.getTotalNumberOfTurns() === this.platform.getNumberOfHistorySteps()} 
+                    >
                         Next
                     </button>
-                    <button type="button" className="in-game-btn" onClick={this.onPrevBtnClicked.bind(this)} >
+                    <button 
+                        type="button" 
+                        className="in-game-btn" 
+                        onClick={this.onPrevBtnClicked.bind(this)} 
+                        disabled={this.platform.getTotalNumberOfTurns() === 0} 
+                    >
                         Prev
                     </button>
                 </div>

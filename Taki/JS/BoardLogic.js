@@ -2,7 +2,7 @@
 
 ///////////////////////////////////////////////////////////////////
 /////  avrage time per turn per human player not working....
-////
+////    BUG::: super taki on top of super taki may couse it to be non colored   
 ////  BUG::: 2+ in taki may cous to allow put other +2 in diffrant color! - shuld be fix
 ////
 ///////////////////////////////////////////////////////////////////
@@ -384,6 +384,10 @@ class BoardLogicClass {
             boardLogic.isWatingForCahngeColor = false;
         }
 
+        boardLogic.getNumberOfHistorySteps = function (){
+            return boardLogic.history.length - 1;
+        }
+
         boardLogic.getIsGameEnded = function(){
             return boardLogic.isGameFinish;
         }
@@ -559,6 +563,23 @@ class BoardLogicClass {
             else {
                 return (boardLogic.currentPlayer && boardLogic.currentPlayer === boardLogic.aiPlayerId) ? "Computer" : "You";
             }
+        }
+
+        boardLogic.CalculatePlayerTournamentScore = function(iPlayerId){
+            let sumTotal = 0;
+            let cards = boardLogic.playersHands[iPlayerId];
+            for(let card of cards){
+                if (card.number === 10 || card.number === 12){
+                    sumTotal += 15;
+                }
+                else if (card.number === 11 || card.number === 13 || card.number === 2){
+                    sumTotal += 10;
+                }
+                else{
+                    sumTotal += card.number;
+                }
+            }
+            return sumTotal;
         }
 
         return boardLogic;

@@ -32,8 +32,10 @@ export default class Lobby extends React.Component {
         this.setState({startGame: true});
     }
 
-    onStartTurnamentClicked(){
+    onSelectTournamentClicked(){
         this.platform.gameMode = 2;
+        this.platform.resetGame();
+        this.platform.setNewGameInTournament();
         this.setState({startGame: true});
     }
 
@@ -42,6 +44,7 @@ export default class Lobby extends React.Component {
             return (
                 <div className="lobby">
                     <button type="button" onClick={this.onStartGameClicked.bind(this)}>Start Game</button>
+                    <button type="button" onClick={this.onSelectTournamentClicked.bind(this)}> Start Tournament </button>
                 </div>
             );
         }
