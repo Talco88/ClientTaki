@@ -10,7 +10,7 @@ export default class Platform {
 
         _PlatformInstance = this;
         this.Callback = iUICallback;
-        this.debug = true;
+        this.debug = false;
         this.isTurnament = false;
         this.isDisplayLobbyStats = false;
         this.playerId = 0;
@@ -20,7 +20,11 @@ export default class Platform {
         this.uiUpdateInterval = 150;
         this.unifyCardWidth = 110;
         this.MessageToPlayer = "";
+        this.popupMessage = "";
         this.gameMode = 0;
+        this.numberOfTurnametGames = 3;
+        this.showPopupClose = false;
+        this.currentTurnamentFinish = false;
         let boardFactory = new BoardLogicClass();
         this.boardState = boardFactory.getBoardState(this.debug);
         this.boardState.init();
@@ -28,11 +32,20 @@ export default class Platform {
 
     resetGame(iIsRerender = true){
         this.boardState.init();
+        this.showPopupClose = false;
+        this.currentTurnamentFinish = false;
         this.MessageToPlayer = "";
+        this.popupMessage = "";
         this.gameTime = 0;
+        if (this.gameMode === 1){
+            this.humanPlayerScore = 0;
+            this.aiPlayerScore = 0;
+            this.numberOfGames = 0;
+        }
         if (iIsRerender){
             this.updateUIAfterChanges();
         }
+        this.isWaitingForFinalTurnamentMessage = true;
     }
 
     updateUIData(){
@@ -195,12 +208,13 @@ export default class Platform {
     }
 
     getIsGameFinished(){
-        if (this.numberOfGames && this.numberOfGames > 0 && this.boardState.getIsGameEnded()){
-            this.numberOfGames--;
+        if (this.numberOfGames && this.numberOfGames >= 0 && this.boardState.getIsGameEnded() && !this.currentTurnamentFinish){
             this.calculatePlayerScores();
-            this.resetGame(false);
-            this.MessageToPlayer = "Current game scores: \n Human: " + this.humanPlayerScore + "\nAI: " + this.aiPlayerScore;
+            this.popupMessage = "Current round: " + ( this.numberOfTurnametGames - this.numberOfGames + 1) +" has finished.\nIncluding this game scores are: \n   Human:  " + this.humanPlayerScore + "\n   AI:      " + this.aiPlayerScore;
+            this.numberOfGames--;
+            this.currentTurnamentFinish = true;
         }
+
         return this.boardState.getIsGameEnded();
     }
 
@@ -242,11 +256,41 @@ export default class Platform {
     getMessageToPlayer(){
         if (this.getIsGameFinished()){
             let  finishMsg = this.boardState.getWinner();
+            if (this.humanPlayerScore > 0 || this.aiPlayerScore > 0){
+                finishMsg = (this.aiPlayerScore > this.humanPlayerScore) ? "Computer Wins tournament!\nBut you did give a good fight" : "You win the tournament!, Good Job!";
+                finishMsg = (this.aiPlayerScore === this.humanPlayerScore) ? "It a tie! \nHo, what a match!" : finishMsg;
+            }
             this.MessageToPlayer = finishMsg;
         }
         return this.MessageToPlayer;
     }
 
+    getIsShowPopup(){
+        return (this.boardState.getIsGameEnded() && !this.showPopupClose);
+    }
+
+    closePopupwindow(){
+        this.showPopupClose = true;
+        if(this.numberOfGames > 0) {
+            this.resetGame(false);
+        }
+        else if (this.numberOfGames === 0 && this.gameMode === 2 && this.isWaitingForFinalTurnamentMessage){
+            this.popupMessage = this.MessageToPlayer;
+            this.isWaitingForFinalTurnamentMessage = false;
+            setTimeout(() => {
+                this.showPopupClose = false;
+                this.updateUIAfterChanges();
+            }, 200);
+        }
+        this.updateUIAfterChanges();
+    }
+
+    getPopupMessage(){
+        if (this.popupMessage === ""){
+            return this.MessageToPlayer;
+        }
+        return this.popupMessage;
+    }
 
 
     /////////////
@@ -261,7 +305,7 @@ export default class Platform {
     setNewGameInTournament(){
         this.humanPlayerScore = 0;
         this.aiPlayerScore = 0;
-        this.numberOfGames = 2;
+        this.numberOfGames = this.numberOfTurnametGames;
         this.resetGame();
     }
 }

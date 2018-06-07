@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom';
 import Statistics from './Statistics';
+import TournamentData from './TournamentData';
 import {Platform}  from './../JS/Platform.js';
 
 
@@ -9,15 +10,10 @@ export default class BoardStatistics extends React.Component {
         super(args);
         this.platform = new Platform();
         this.state = { 
-            gameTime: this.platform.gameTime,
-            currentPlayer: this.platform.displayPlayer()
+            gameTime: this.platform.gameTime
          };
     }
     componentDidMount() {
-        this.updateInterval = setInterval(
-            () => this.updateCurrentPlayer(),
-            this.platform.uiUpdateInterval
-        );
         this.timerInterval = setInterval(
             () => this.statsTick(),
             1000
@@ -25,34 +21,30 @@ export default class BoardStatistics extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.updateInterval);
         clearInterval(this.timerInterval);
     }
 
-    updateCurrentPlayer(){
-        this.setState({currentPlayer: this.platform.displayPlayer()});
-    }
-
     statsTick(){
-        this.platform.gameTime++;
-        this.setState({gameTime: this.platform.gameTime});
+        if (!this.platform.getIsGameFinished()){
+            this.platform.gameTime++;
+            this.setState({gameTime: this.platform.gameTime});
+        }
     }
 
 
     isStopTimmer(){
-        if (this.platform.getIsGameFinished()){
+        if (this.platform.getIsGameFinished() && this.platform.gameMode != 2){
             clearInterval(this.timerInterval);
         }
     }
 
     onEndGameClicked(){
-        if (this.platform.getIsGameFinished()){
+        if (this.platform.getIsGameFinished() || this.platform.gameMode === 2){
             this.platform.exitGameBoard();
         }
         else{
             this.platform.playerEndedGame();
         }
-        console.log("ending Game...");
     }
 
     render() {
@@ -61,10 +53,11 @@ export default class BoardStatistics extends React.Component {
         return (
             <div className="statistics">
                 <Statistics GameTime={this.state.gameTime}/>
-                <p>Currently Playing: {this.state.currentPlayer}</p>
+                <p>Currently Playing: {this.platform.displayPlayer()}</p>
                 <div className="finish-game">
                     <button type="button" className="in-game-btn end-game-btn" onClick={this.onEndGameClicked.bind(this)}>{btnString}</button>
                 </div>
+                <TournamentData />
             </div>
         );
     }

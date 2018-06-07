@@ -20,6 +20,7 @@ export default class Lobby extends React.Component {
         this.setState({playersCard: iPlayerCards});
         this.setState({otherCards: iOponentCards});
         this.setState({messageToPlayer: this.platform.getMessageToPlayer()});
+        this.setState({showPopup: this.platform.getIsShowPopup()})
     }
 
     setEndGame(){
@@ -56,6 +57,7 @@ export default class Lobby extends React.Component {
                     MessageToPlayer = {this.state.messageToPlayer} 
                     PlayersCard = {this.state.playersCard}
                     AiCards = {this.state.otherCards}
+                    ShowPopup = {this.state.showPopup}
                 />
             );
         }

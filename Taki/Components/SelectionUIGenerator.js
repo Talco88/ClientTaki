@@ -44,15 +44,20 @@ export default class SelectionUIGenerator extends React.Component {
         }
         else if(isPlayerCurrentlyPlayer && this.platform.getIsWatingForCahngeColor()){
             return(
-                <div className="color-selection" onClick={this.onChangeColorClicked.bind(this)} >
-                    <button type="button" className="color-button red"></button>
-                    <button type="button" className="color-button yellow"></button>
-                    <button type="button" className="color-button blue"></button>
-                    <button type="button" className="color-button green"></button>
+                <div>
+                    <div className="color-selection" onClick={this.onChangeColorClicked.bind(this)} >
+                        <button type="button" className="color-button red"></button>
+                        <button type="button" className="color-button yellow"></button>
+                        <button type="button" className="color-button blue"></button>
+                        <button type="button" className="color-button green"></button>
+                    </div>
+                    <div className="selction-instruction">
+                        <p>Pleas Select one of the colors</p>
+                    </div>
                 </div>
             );
         }
-        else if (this.platform.getIsGameFinished()){
+        else if (this.platform.getIsGameFinished() && this.platform.gameMode === 1){
             return (
                 <div>
                     <button 

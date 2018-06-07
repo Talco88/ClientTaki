@@ -8,13 +8,29 @@ export default class BotCards extends React.Component {
     constructor(args){
         super(args);
         this.platform = new Platform();
+        this.updating = false;
         this.state = {
             playerId: 1,
             cards:  this.platform.getOtherPlayerHand(1) 
         };
-
     }
 
+    setCards(iCards)
+    {
+        this.setState({playerId: 1});
+    }
+
+    componentDidMount() {
+        this.timerInterval = setInterval(
+            () => this.setCards(),
+            200
+        );
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerInterval);
+    }
+    
     render() {
         let margin = this.platform.calculateMargininCards(this.props.AiCards.length, this.platform.unifyCardWidth);
         return (

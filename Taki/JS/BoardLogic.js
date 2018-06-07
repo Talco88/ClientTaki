@@ -252,7 +252,9 @@ class BoardLogicClass {
             else if (iCard.number === 10 && iCard.color === 4) {
                 // super taki
                 if (boardLogic.currentCard.number != 12){
-                    boardLogic.changColorSelection = boardLogic.currentCard.color;
+                    if (boardLogic.changColorSelection === 4){ // if currently not active change color selection
+                        boardLogic.changColorSelection = boardLogic.currentCard.color;
+                    }
                 }
                 
                 boardLogic.openTaki = true;
@@ -498,11 +500,13 @@ class BoardLogicClass {
 
         boardLogic.isCardInTheSameColorExsist = function (iCards, iColor) {
             var retVal = false;
-            iCards.forEach(function(card){
-                if(card.color === iColor){
-                    retVal = true;
-                }
-            });
+            if (iColor != 4){
+                iCards.forEach(function(card){
+                    if(card.color === iColor){
+                        retVal = true;
+                    }
+                });
+            }
             return retVal;
         }
 

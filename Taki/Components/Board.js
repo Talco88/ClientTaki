@@ -1,9 +1,8 @@
-﻿//import React from 'react';
-//import ReactDOM from 'react-dom';
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import BotCards from './BotCards';
 import CentralUI from './CentralUI';
 import PlayersCards from './PlayersCards';
+import Popup from './Popup';
 
 
 export default class Board extends React.Component {
@@ -17,6 +16,7 @@ export default class Board extends React.Component {
                     MessageToPlayer={this.props.MessageToPlayer}
                 />
                 <PlayersCards PlayersCard={this.props.PlayersCard} />
+                <Popup Show={this.props.ShowPopup} />
             </div>
         );
     }

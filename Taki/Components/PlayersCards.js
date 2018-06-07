@@ -8,41 +8,41 @@ export default class PlayersCards extends React.Component {
     constructor(args){
         super(args);
         this.platform = new Platform();
+        this.updating = false;
         this.playerId = this.platform.playerId;
         this.cards = this.platform.getPlayerHand(0); 
         this.state = {
             playerId: 0
-            //cards:  this.platform.getPlayerHand(0) 
         };
         playerCardToShow = this;
     }
 
     setCards(iCards)
     {
-        this.setState({cards: iCards});
+
+            this.setState({playerId: 0});
+
     }
 
-    render() {
-        this.cards = this.props.PlayersCard;
-        let margin = this.platform.calculateMargininCards(this.cards.length, this.platform.unifyCardWidth);
-        return (
-            <div id="playersCards" className="section player-cards">
-                { this.cards.map((card) => (
-                    <Card 
-                        key={card.id} 
-                        id={card.id} 
-                        number={card.number} 
-                        option={card.option} 
-                        color={card.color} 
-                        displayColor={card.displayColor} 
-                        selection={this.onClickedSelectedCard.bind(this)}
-                        marginR={margin}/>
-                    ))
-                }
-            </div>
+    componentDidMount() {
+        this.timerInterval = setInterval(
+            () => this.setCards(),
+            200
         );
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timerInterval);
+    }
+/*
+    componentDidMount() {
+        window.addEventListener("resize", this.setCards.bind(this), false);
+    }
+    
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.setCards.bind(this), false);
+    }
+*/
     onClickedSelectedCard(event){
         if (this.platform.getIsGameFinished()){
             return;
@@ -53,7 +53,7 @@ export default class PlayersCards extends React.Component {
         let selectedCard = null;
         let index = -1;
         let i = 0;
-    
+
         
         let logicMessage = this.platform.isUserCurrentTurn(true);
         if (logicMessage != "") {
@@ -78,5 +78,26 @@ export default class PlayersCards extends React.Component {
                 console.log(message);
             }
         }
+    }
+
+    render() {
+        this.cards = this.props.PlayersCard;
+        let margin = this.platform.calculateMargininCards(this.cards.length, this.platform.unifyCardWidth);
+        return (
+            <div id="playersCards" className="section player-cards">
+                { this.cards.map((card) => (
+                    <Card 
+                        key={card.id} 
+                        id={card.id} 
+                        number={card.number} 
+                        option={card.option} 
+                        color={card.color} 
+                        displayColor={card.displayColor} 
+                        selection={this.onClickedSelectedCard.bind(this)}
+                        marginR={margin}/>
+                    ))
+                }
+            </div>
+        );
     }
 }

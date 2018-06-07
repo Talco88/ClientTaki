@@ -110,11 +110,13 @@
 }
 
 .statistics{
+    padding-top: 30px;
     font-size: 18px;
 }
 
 .messaging{
     font-size: 18px;
+    white-space: pre-wrap;
 }
 
 .messaging{
@@ -148,6 +150,7 @@
 
 @media screen and (max-width: 1000px){
     .statistics{
+        padding-top: 50px;
         font-size: 15px;
     }
     .messaging{
@@ -163,6 +166,7 @@
 
 @media screen and (max-width: 730px){
     .statistics{
+        padding-top: 70px;
         font-size: 12px;
     }
     .messaging{
